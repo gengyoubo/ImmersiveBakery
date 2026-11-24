@@ -1,0 +1,37 @@
+{
+  "camera": {"position": [8, 19, -26], "target": [8, 6.4, 7], "fov": 41},
+  "work_plane": 8,
+  "idle_visible": false,
+  "interface": {"inventory_panel": false},
+  "inventory_drawer": {
+    "side": "bottom",
+    "style": "minimal",
+    "always_open": true,
+    "compact": true,
+    "background": "#00000000",
+    "slot_color": "#8C1E140C",
+    "carry_size": 8
+  },
+  "nodes": [
+    {
+      "id": "shelf_0", "pos": [12, 1.2, 6],
+      "collider": {"from": [-3.6, 0, -4], "to": [3.6, 5.4, 4]},
+      "slot": {"slot": "shelves[0]", "display": "hidden", "size": 6, "idle_highlight": 0.2}
+    },
+    {
+      "id": "shelf_1", "pos": [4, 1.2, 6],
+      "collider": {"from": [-3.6, 0, -4], "to": [3.6, 5.4, 4]},
+      "slot": {"slot": "shelves[1]", "display": "hidden", "size": 6, "idle_highlight": 0.2}
+    },
+    {
+      "id": "shelf_2", "pos": [12, 8.2, 10],
+      "collider": {"from": [-3.6, 0, -4], "to": [3.6, 5.4, 4]},
+      "slot": {"slot": "shelves[2]", "display": "hidden", "size": 6, "idle_highlight": 0.2}
+    },
+    {
+      "id": "shelf_3", "pos": [4, 8.2, 10],
+      "collider": {"from": [-3.6, 0, -4], "to": [3.6, 5.4, 4]},
+      "slot": {"slot": "shelves[3]", "display": "hidden", "size": 6, "idle_highlight": 0.2}
+    }
+  ]
+}

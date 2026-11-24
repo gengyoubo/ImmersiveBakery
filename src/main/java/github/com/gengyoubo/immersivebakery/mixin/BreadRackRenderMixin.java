@@ -9,11 +9,19 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.phys.Vec2;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
+import org.spongepowered.asm.mixin.injection.Constant;
 import org.spongepowered.asm.mixin.injection.Inject;
+import org.spongepowered.asm.mixin.injection.ModifyConstant;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 @Mixin(value = BreadRackRender.class, remap = false)
 abstract class BreadRackRenderMixin {
+    // Bakeries leaves a quarter of the rack behind the open window.
+    @ModifyConstant(method = "renderDoor", constant = {@Constant(floatValue = 12.0F), @Constant(floatValue = -12.0F)})
+    private float immersiveBakery$openFully(float distance) {
+        return Math.copySign(16.0F, distance);
+    }
+
     @Inject(method = "renderItem", at = @At(value = "INVOKE", target = WorkBlockItemRenderer.IS_BLOCK_MODEL),
             cancellable = true)
     private void immersiveBakery$renderItemModel(ItemStack stack, BreadRackBlockEntity rack, Vec2 position,
