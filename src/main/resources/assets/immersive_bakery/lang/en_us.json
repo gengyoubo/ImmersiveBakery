@@ -11,5 +11,16 @@
   "immersive_bakery.fermentation_box.increase_duration": "Longer proofing · %s tick steps",
   "immersive_bakery.fermentation_box.decrease_duration": "Shorter proofing · %s tick steps",
   "immersive_bakery.fermentation_box.power_on": "Start proofing",
-  "immersive_bakery.fermentation_box.power_off": "Pause proofing"
+  "immersive_bakery.fermentation_box.power_off": "Pause proofing",
+  "immersive_bakery.blender.power_on": "Start mixing",
+  "immersive_bakery.blender.power_off": "Pause mixing",
+  "immersive_bakery.blender.no_recipe": "These ingredients make nothing yet",
+  "immersive_bakery.blender.scoop": "Scoop with %s",
+  "immersive_bakery.blender.draw": "%s · draw with %s",
+  "immersive_bakery.blender.holds_liquid": "Draw the liquid out of the bowl first",
+  "immersive_bakery.book.seconds": "%s s",
+  "immersive_bakery.book.tab.all": "All recipes",
+  "immersive_bakery.book.tab.recent": "Made lately",
+  "immersive_bakery.book.only_ready": "Showing what you can make",
+  "immersive_bakery.book.showing_all": "Showing all"
 }

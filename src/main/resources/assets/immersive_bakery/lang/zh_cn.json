@@ -11,5 +11,16 @@
   "immersive_bakery.fermentation_box.increase_duration": "延长醒发 · %s tick 一档",
   "immersive_bakery.fermentation_box.decrease_duration": "缩短醒发 · %s tick 一档",
   "immersive_bakery.fermentation_box.power_on": "启动醒发箱",
-  "immersive_bakery.fermentation_box.power_off": "暂停醒发"
+  "immersive_bakery.fermentation_box.power_off": "暂停醒发",
+  "immersive_bakery.blender.power_on": "开始搅拌",
+  "immersive_bakery.blender.power_off": "暂停搅拌",
+  "immersive_bakery.blender.no_recipe": "食材还凑不成配方",
+  "immersive_bakery.blender.scoop": "用%s舀取",
+  "immersive_bakery.blender.draw": "%s · 用%s取出",
+  "immersive_bakery.blender.holds_liquid": "请先取出盆里的液体",
+  "immersive_bakery.book.seconds": "%s 秒",
+  "immersive_bakery.book.tab.all": "全部配方",
+  "immersive_bakery.book.tab.recent": "最近做过",
+  "immersive_bakery.book.only_ready": "只显示现在能做的",
+  "immersive_bakery.book.showing_all": "显示全部"
 }

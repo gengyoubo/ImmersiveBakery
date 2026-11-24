@@ -1,0 +1,32 @@
+{
+  "camera": {"position": [8, 38.4, -13.2], "target": [8, 6, 4], "fov": 30, "glances": [{"id": "mixing", "position": [8, 27.2, -25.9], "target": [8, 6, 4], "fov": 30, "time": 0.35, "back_on_take": false, "back_zone": 0, "hint": false}]},
+  "work_plane": 9,
+  "idle_visible": true,
+  "interface": {"inventory_panel": false},
+  "inventory_drawer": {"side": "bottom", "style": "minimal", "always_open": true, "compact": true, "background": "#00000000", "slot_color": "#8C1E140C", "carry_size": 3},
+  "nodes": [
+    {"id": "batter", "pos": [8, 0, 4], "pickable": false},
+    {"id": "stream", "pos": [6.9, 0, 2.7], "pickable": false},
+    {"id": "mouth", "drop_zone": "ingredients", "collider": {"from": [5, 7.8, 1], "to": [11, 9, 7]}},
+    {"id": "scoop", "collider": {"from": [5, 5, 1], "to": [11, 8.4, 7]}, "takes_items": true},
+    {"id": "bowl", "collider": {"from": [6, 3, 2], "to": [10, 5.4, 6]}, "takes_items": true},
+    {"id": "item_0", "pos": [8, 6.5, 4], "slot": {"slot": "ingredients[0]", "size": 2, "counts": "hover", "highlight": false}},
+    {"id": "item_1", "pos": [8, 6.5, 4], "slot": {"slot": "ingredients[1]", "size": 2, "counts": "hover", "highlight": false}},
+    {"id": "item_2", "pos": [8, 6.5, 4], "slot": {"slot": "ingredients[2]", "size": 2, "counts": "hover", "highlight": false}},
+    {"id": "item_3", "pos": [8, 6.5, 4], "slot": {"slot": "ingredients[3]", "size": 2, "counts": "hover", "highlight": false}},
+    {"id": "item_4", "pos": [8, 6.5, 4], "slot": {"slot": "ingredients[4]", "size": 2, "counts": "hover", "highlight": false}},
+    {"id": "item_5", "pos": [8, 6.5, 4], "slot": {"slot": "ingredients[5]", "size": 2, "counts": "hover", "highlight": false}},
+    {"id": "item_6", "pos": [8, 6.5, 4], "slot": {"slot": "ingredients[6]", "size": 2, "counts": "hover", "highlight": false}},
+    {"id": "item_7", "pos": [8, 6.5, 4], "slot": {"slot": "ingredients[7]", "size": 2, "counts": "hover", "highlight": false}},
+    {"id": "item_8", "pos": [8, 6.5, 4], "slot": {"slot": "ingredients[8]", "size": 2, "counts": "hover", "highlight": false}},
+    {"id": "result", "pos": [8, 6.2, 4], "slot": {"slot": "result", "size": 3, "counts": "hover", "highlight": false}},
+    {"id": "container", "pos": [14.2, 0.1, 3], "slot": {"slot": "container", "size": 3, "idle_highlight": 0.2, "counts": "hover"}},
+    {"id": "lump", "pos": [8, 4.5, 4], "rotation": [-90, 180, 0], "scale": 0.19, "hidden": true, "pickable": false},
+    {"id": "hand", "pos": [0, 0, 0], "scale": 0.18, "hidden": true, "pickable": false},
+    {"id": "power", "template": "diegesis:control/button", "pos": [8, 1.2, 0.3], "rotation": [-45, 0, 0], "scale": 0.3, "visual": {"model": "immersive_bakery:diegesis/oven_power_button"}, "control": {"control": "power", "range": [0, 1.5]}, "collider": {"from": [-3, 0, -3], "to": [3, 5.25, 3]}, "children": [{"id": "power_label", "pos": [0, 5.2, 0], "rotation": [90, 0, 0], "pickable": false}]},
+    {"id": "panel", "pos": [8, 6, 4], "pickable": false, "children": [
+      {"id": "book_open", "pos": [7, 13, -6.9], "rotation": [-30, 0, 0], "scale": 0.58, "hidden": true, "collider": {"from": [-5.3, -0.4, -3.9], "to": [5.3, 1.4, 3.9]}},
+      {"id": "timer", "pos": [-7.5, 6.5, -2], "rotation": [-30, 0, 0], "scale": 0.52, "hidden": true, "pickable": false, "children": [{"id": "timer_track", "pos": [0, 0.12, 0], "pickable": false}, {"id": "timer_fill", "pos": [0, 0.24, 0], "pickable": false}, {"id": "timer_icon", "pos": [0, 0.36, 0.33], "rotation": [90, 0, 0], "scale": 0.16, "visual": {"item": "minecraft:clock", "anchor": [8, 8, 8]}, "pickable": false}]}
+    ]}
+  ]
+}

@@ -2,13 +2,17 @@ package github.com.gengyoubo.immersivebakery.client;
 
 import com.pockyl.diegesis.api.client.MeshShape;
 import com.pockyl.diegesis.api.client.StationView;
+import com.pockyl.diegesis.api.scene.Visual;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.Mth;
+import net.minecraft.world.item.Item;
+import org.joml.Vector3f;
 
 final class BakingTimer {
     private static final ResourceLocation WHITE = ResourceLocation.fromNamespaceAndPath("diegesis", "block/white");
     private static final int BAR_STEPS = 32;
     private static final float BAR_HALF_WIDTH = 1.3F;
+    private static final Vector3f ICON_MIDDLE = new Vector3f(8, 8, 8);
     private int drawnSteps = -1;
 
     void setup(StationView view) {
@@ -37,6 +41,11 @@ final class BakingTimer {
             drawnSteps = steps;
             view.node("timer_fill").ifPresent(node -> node.setShape(steps == 0 ? null : bar((float) steps / BAR_STEPS), WHITE, true));
         }
+    }
+
+    /** Shows what is being made instead of the clock. */
+    void setIcon(StationView view, Item item) {
+        view.node("timer_icon").ifPresent(node -> node.setVisual(Visual.ofItem(item).withAnchor(ICON_MIDDLE)));
     }
 
     private static MeshShape bar(float fraction) {

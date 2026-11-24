@@ -54,6 +54,9 @@ repositories {
 
 dependencies {
     minecraft "net.minecraftforge:forge:${minecraft_version}-${forge_version}"
+    implementation fg.deobf("curse.maven:jei-238222:9749863")
+    // Required by JEI, which no longer bundles it.
+    runtimeOnly fg.deobf("curse.maven:mezzconfig-1689768:9527933")
     implementation fg.deobf("curse.maven:bakeries-1191781:9647930")
     implementation fg.deobf("curse.maven:diegesis-1790227:9764617")
 }
