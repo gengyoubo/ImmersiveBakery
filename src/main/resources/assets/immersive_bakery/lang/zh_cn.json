@@ -52,5 +52,8 @@
   "immersive_bakery.fermentation_tank.milk_full": "奶 %s/%s · 放入盐，或用玻璃瓶取出",
   "immersive_bakery.fermentation_tank.fermenting": "正在发酵",
   "immersive_bakery.fermentation_tank.yeast": "鲜酵母 %s 瓶 · 用玻璃瓶取出",
-  "immersive_bakery.fermentation_tank.cheese": "点击取出干酪"
+  "immersive_bakery.fermentation_tank.cheese": "点击取出干酪",
+  "immersive_bakery.drink_cup.empty": "放入冰和其他材料，先后都可以",
+  "immersive_bakery.drink_cup.more": "还差材料",
+  "immersive_bakery.drink_cup.shake": "%s：按住杯子上下摇晃"
 }

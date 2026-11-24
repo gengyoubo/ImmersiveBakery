@@ -52,5 +52,8 @@
   "immersive_bakery.fermentation_tank.milk_full": "Milk %s/%s · add salt, or take it with a glass bottle",
   "immersive_bakery.fermentation_tank.fermenting": "Fermenting",
   "immersive_bakery.fermentation_tank.yeast": "%s bottles of yeast · take it with a glass bottle",
-  "immersive_bakery.fermentation_tank.cheese": "Click to take the cheese"
+  "immersive_bakery.fermentation_tank.cheese": "Click to take the cheese",
+  "immersive_bakery.drink_cup.empty": "Put in ice and what else the drink needs, in any order",
+  "immersive_bakery.drink_cup.more": "Something is still missing",
+  "immersive_bakery.drink_cup.shake": "%s: hold the cup and shake it up and down"
 }

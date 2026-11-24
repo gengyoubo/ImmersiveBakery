@@ -1,0 +1,122 @@
+package github.com.gengyoubo.immersivebakery.cup;
+
+import com.pockyl.diegesis.api.Diegesis;
+import com.pockyl.diegesis.api.station.StationContext;
+import com.pockyl.diegesis.api.station.StationLogic;
+import com.renyigesai.bakeries.block.glass_drink_cup.GlassDrinkCupBlock;
+import com.renyigesai.bakeries.block.glass_drink_cup.GlassDrinkCupBlockEntity;
+import com.renyigesai.bakeries.init.BakeriesSounds;
+import java.util.List;
+import java.util.Set;
+import javax.annotation.Nullable;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.sounds.SoundEvents;
+import net.minecraft.sounds.SoundSource;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.ItemStack;
+
+final class CupLogic implements StationLogic {
+    @Nullable
+    private final GlassDrinkCupBlockEntity cup;
+
+    CupLogic(StationContext station) {
+        cup = station.blockEntity() instanceof GlassDrinkCupBlockEntity blockEntity ? blockEntity : null;
+    }
+
+    @Override
+    public void onCustomAction(StationContext station, Player player, String action, CompoundTag data) {
+        if (cup == null || cup.isRemoved() || station.blockEntity() != cup || !player.mayBuild() || !player.level().mayInteract(player, station.pos())) {
+            return;
+        }
+        switch (action) {
+            case CupStation.ACTION_ADD -> addCarried(station, player);
+            case CupStation.ACTION_TAKE -> take(station, player);
+            case CupStation.ACTION_FILL -> fill(station, player, ResourceLocation.tryParse(data.getString(CupStation.RECIPE)));
+            case CupStation.ACTION_SHAKEN -> finish(station);
+            default -> { }
+        }
+    }
+
+    private void addCarried(StationContext station, Player player) {
+        ItemStack carried = player.inventoryMenu.getCarried();
+        if (!CupContents.accepts(station.level(), CupContents.in(cup), carried)) {
+            return;
+        }
+        ItemStack one = carried.copyWithCount(1);
+        if (!player.getAbilities().instabuild) {
+            player.inventoryMenu.setCarried(carried.copyWithCount(carried.getCount() - 1));
+        }
+        add(station, player, one);
+    }
+
+    private void add(StationContext station, Player player, ItemStack one) {
+        List<ItemStack> in = CupContents.in(cup);
+        in.add(one);
+        CupContents.set(cup, in);
+        if (CupContents.isPoured(one) && !player.getAbilities().instabuild) {
+            give(player, one.getCraftingRemainingItem());
+        }
+        if (station.blockState().getBlock() instanceof GlassDrinkCupBlock block) {
+            station.level().playSound(null, station.pos(), block.getSound(one), SoundSource.BLOCKS, 1, 1);
+        }
+        CompoundTag data = new CompoundTag();
+        data.put(CupStation.ITEM, one.save(new CompoundTag()));
+        station.effect(CupStation.EFFECT_ADDED, "cup", data);
+    }
+
+    private void take(StationContext station, Player player) {
+        List<ItemStack> in = CupContents.in(cup);
+        for (int i = in.size() - 1; i >= 0; i--) {
+            if (!CupContents.isPoured(in.get(i))) {
+                ItemStack taken = in.remove(i).copy();
+                CupContents.set(cup, in);
+                give(player, taken);
+                station.level().playSound(null, station.pos(), SoundEvents.ITEM_PICKUP, SoundSource.PLAYERS, 0.3F, 1.2F);
+                return;
+            }
+        }
+    }
+
+    private void fill(StationContext station, Player player, @Nullable ResourceLocation id) {
+        var inventory = player.getInventory();
+        CupContents.recipes(station.level()).stream().filter(recipe -> recipe.getId().equals(id)).findFirst().ifPresent(recipe -> {
+            List<Integer> slots = CupContents.missingFrom(recipe, CupContents.in(cup), inventory);
+            if (slots == null) {
+                return;
+            }
+            for (int slot : slots) {
+                ItemStack one = inventory.getItem(slot).copyWithCount(1);
+                if (!player.getAbilities().instabuild) {
+                    inventory.removeItem(slot, 1);
+                }
+                add(station, player, one);
+            }
+            inventory.setChanged();
+        });
+    }
+
+    /** As when Bakeries' cup is clicked with an empty hand: the drink stands in its place. */
+    private void finish(StationContext station) {
+        var made = CupContents.made(station.level(), CupContents.in(cup));
+        if (made == null || !(station.blockState().getBlock() instanceof GlassDrinkCupBlock block)) {
+            return;
+        }
+        ItemStack drink = made.getResultItem(station.level().registryAccess()).copy();
+        Set<Player> users = Set.copyOf(station.users());
+        block.spawnOrSetBlock(drink, station.level(), station.pos());
+        station.level().playSound(null, station.pos(), BakeriesSounds.INSERT_STRAW.get(), SoundSource.BLOCKS, 1, 1);
+        for (Player user : users) {
+            if (user instanceof ServerPlayer serverPlayer) {
+                Diegesis.close(serverPlayer);
+            }
+        }
+    }
+
+    private static void give(Player player, ItemStack stack) {
+        if (!stack.isEmpty() && !player.getInventory().add(stack)) {
+            player.drop(stack, false);
+        }
+    }
+}

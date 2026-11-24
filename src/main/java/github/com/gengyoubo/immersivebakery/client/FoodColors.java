@@ -1,5 +1,6 @@
 package github.com.gengyoubo.immersivebakery.client;
 
+import com.renyigesai.bakeries.init.BakeriesItems;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
@@ -17,6 +18,8 @@ final class FoodColors {
     static final int FALLBACK = 0xE8DCC0;
     private static final int WATER = 0x3F76E4;
     private static final int MILK = 0xF6F3EA;
+    /** The pot it comes in shows nothing of it. */
+    private static final int COFFEE = 0x40210F;
     private static final Map<Item, Integer> CACHE = new HashMap<>();
     private static BakedModel readWith;
 
@@ -26,6 +29,9 @@ final class FoodColors {
     static int liquid(ItemStack full) {
         if (full.is(Items.WATER_BUCKET)) {
             return WATER;
+        }
+        if (full.is(BakeriesItems.MOKA_POT_FILL.get())) {
+            return COFFEE;
         }
         return full.is(Items.MILK_BUCKET) ? MILK : batter(full, full.getCraftingRemainingItem());
     }

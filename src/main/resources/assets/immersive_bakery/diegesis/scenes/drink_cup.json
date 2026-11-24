@@ -1,0 +1,14 @@
+{
+  "camera": {"position": [8, 23, -25], "target": [8, 7.2, 8], "fov": 32},
+  "work_plane": 9,
+  "idle_visible": true,
+  "interface": {"inventory_panel": false},
+  "inventory_drawer": {"side": "bottom", "style": "minimal", "always_open": true, "compact": true, "background": "#00000000", "slot_color": "#8C1E140C", "carry_size": 3},
+  "nodes": [
+    {"id": "cup", "pos": [8, 0, 8], "collider": {"from": [-2.4, 0, -2.4], "to": [2.4, 9.6, 2.4]}, "grabbable": {"hold": "drag", "grip": [0, 5, 0], "sway": 0.5, "plane": {"point": [8, 5, 8], "normal": [0, 0, -1], "bounds": {"from": [6.5, 5, 8], "to": [9.5, 14, 8]}}}},
+    {"id": "glass", "pos": [8, 0, 8], "collider": {"from": [-2.1, 0, -2.1], "to": [2.1, 9.4, 2.1]}, "takes_items": true},
+    {"id": "added", "pos": [8, 9.5, 8], "hidden": true, "pickable": false},
+    {"id": "stream", "pos": [8.8, 0, 8], "pickable": false},
+    {"id": "book_open", "pos": [16.6, 10.5, 1], "rotation": [-64, 0, 0], "scale": 0.72, "hidden": true, "collider": {"from": [-5.3, -0.4, -3.9], "to": [5.3, 1.4, 3.9]}}
+  ]
+}

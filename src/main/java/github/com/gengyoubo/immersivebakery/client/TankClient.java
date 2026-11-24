@@ -1,7 +1,6 @@
 package github.com.gengyoubo.immersivebakery.client;
 
 import com.pockyl.diegesis.api.client.DiegesisClient;
-import com.pockyl.diegesis.api.client.NodeView;
 import com.pockyl.diegesis.api.client.StationBehavior;
 import com.pockyl.diegesis.api.client.StationView;
 import com.pockyl.diegesis.api.event.SceneEvent;
@@ -13,17 +12,12 @@ import github.com.gengyoubo.immersivebakery.ImmersiveBakery;
 import github.com.gengyoubo.immersivebakery.client.recipebook.RecipeBook;
 import github.com.gengyoubo.immersivebakery.tank.TankContents;
 import github.com.gengyoubo.immersivebakery.tank.TankStation;
-import java.util.ArrayDeque;
-import java.util.Deque;
 import javax.annotation.Nullable;
-import net.minecraft.client.Minecraft;
-import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.Mth;
-import net.minecraft.world.item.ItemDisplayContext;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.level.block.state.BlockState;
@@ -38,25 +32,10 @@ public final class TankClient implements StationBehavior {
     private static final String BOOK = "book_open";
     private static final float CAPTION_SECONDS = 4;
     private static final float LID_PER_SECOND = 4;
-    /** What goes in comes over the mouth: solids drop, vessels tip. Seconds, and pixels over the neck. */
-    private static final float ADD_SECONDS = 0.9F;
-    private static final float ADD_FROM = 5;
-    private static final float ADD_TO = -5;
-    private static final float TIP_BESIDE = 3.4F;
-    private static final float TIP_OVER = 3.5F;
-    private static final float TIP_ANGLE = 110;
-    private static final float ITEM_SIZE = 4.8F;
-    /** The stream from a tipped vessel, scene pixels, and when it runs, in shares of the time. */
-    private static final float STREAM_TOP = 18.6F;
-    private static final float STREAM_BOTTOM = 5;
-    private static final float STREAM_FROM = 0.28F;
-    private static final float STREAM_FALL = 0.12F;
-    private static final float STREAM_UNTIL = 0.75F;
+    private static final AddedItems.Place MOUTH = new AddedItems.Place(4.8F, 5, -5, 3.4F, 3.5F, 18.6F, 5);
 
     private final RecipeBook book = new RecipeBook(new TankBook());
-    /** What is seen going in; the first one is under way. */
-    private final Deque<ItemStack> added = new ArrayDeque<>();
-    private float addTime;
+    private final AddedItems added = new AddedItems(MOUTH, TankClient::isVessel, vessel -> FoodColors.liquid(liquid(vessel)));
     private float lid;
     @Nullable
     private BlockState shown;
@@ -95,33 +74,12 @@ public final class TankClient implements StationBehavior {
 
     @Override
     public void onSceneReady(StationView view) {
-        added.clear();
+        added.setup(view);
         shown = null;
         view.node(BOOK).ifPresent(node -> node.setPainter(book));
         view.node("jar").ifPresent(node -> node.setPainter((pose, buffers, light) -> {
             if (view.isBlockHidden()) {
                 TankPainter.draw(view, view.level().getBlockState(view.pos()), pose, buffers, lid * lid * (3 - 2 * lid));
-            }
-        }));
-        // As it is, with its potion and all.
-        view.node("added").ifPresent(node -> node.setPainter((pose, buffers, light) -> {
-            if (!added.isEmpty()) {
-                pose.pushPose();
-                pose.scale(ITEM_SIZE, ITEM_SIZE, ITEM_SIZE);
-                Minecraft.getInstance().getItemRenderer().renderStatic(added.peek(), ItemDisplayContext.FIXED, light, OverlayTexture.NO_OVERLAY,
-                        pose, buffers, view.level(), 0);
-                pose.popPose();
-            }
-        }));
-        view.node("stream").ifPresent(node -> node.setPainter((pose, buffers, light) -> {
-            float at = addTime / ADD_SECONDS;
-            if (!added.isEmpty() && isVessel(added.peek()) && at > STREAM_FROM) {
-                float fallen = STREAM_TOP - STREAM_BOTTOM;
-                float top = STREAM_TOP - Math.max(0, at - STREAM_UNTIL) / STREAM_FALL * fallen;
-                float bottom = Math.max(STREAM_BOTTOM, STREAM_TOP - (at - STREAM_FROM) / STREAM_FALL * fallen);
-                if (top > bottom) {
-                    BatterPainter.drawStream(pose, buffers, light, top, bottom, FoodColors.liquid(liquid(added.peek())));
-                }
             }
         }));
     }
@@ -141,32 +99,7 @@ public final class TankClient implements StationBehavior {
         book.frame(view, deltaSeconds);
         boolean open = view.isInUse() && shown != null && (!TankContents.isFermenting(shown) || !added.isEmpty());
         lid = Mth.clamp(lid + (open ? deltaSeconds : -deltaSeconds) * LID_PER_SECOND, 0, 1);
-        NodeView node = view.node("added").orElse(null);
-        if (node == null) {
-            return;
-        }
-        if (added.isEmpty() || !view.isInUse()) {
-            added.clear();
-            addTime = 0;
-            node.setVisible(false);
-            return;
-        }
-        ItemStack stack = added.peek();
-        addTime += deltaSeconds;
-        float at = Math.min(1, addTime / ADD_SECONDS);
-        if (isVessel(stack)) {
-            float tip = Mth.clamp(Math.min(at, 1 - at) * 4, 0, 1);
-            node.moveTo(TIP_BESIDE, TIP_OVER, 0, 0);
-            node.rotateTo(0, 0, TIP_ANGLE * tip, 0);
-        } else {
-            node.moveTo(0, Mth.lerp(at * at, ADD_FROM, ADD_TO), 0, 0);
-            node.rotateTo(0, 0, 0, 0);
-        }
-        node.setVisible(true);
-        if (at >= 1) {
-            added.poll();
-            addTime = 0;
-        }
+        added.frame(view, deltaSeconds);
     }
 
     @Override

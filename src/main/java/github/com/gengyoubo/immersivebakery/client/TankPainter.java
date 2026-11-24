@@ -50,7 +50,8 @@ final class TankPainter {
         pose.popPose();
     }
 
-    private static void draw(StationView view, BlockState tank, BakedModel model, PoseStack pose, MultiBufferSource buffers) {
+    /** Any block model, from the scene's origin. */
+    static void draw(StationView view, BlockState tank, BakedModel model, PoseStack pose, MultiBufferSource buffers) {
         pose.pushPose();
         pose.scale(16, 16, 16);
         // The scene is turned to the player, the block is not.
