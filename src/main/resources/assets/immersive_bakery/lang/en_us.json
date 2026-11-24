@@ -22,5 +22,9 @@
   "immersive_bakery.book.tab.all": "All recipes",
   "immersive_bakery.book.tab.recent": "Made lately",
   "immersive_bakery.book.only_ready": "Showing what you can make",
-  "immersive_bakery.book.showing_all": "Showing all"
+  "immersive_bakery.book.showing_all": "Showing all",
+  "immersive_bakery.moka_pot.insert": "Put in ground coffee",
+  "immersive_bakery.moka_pot.brewing": "Brewing",
+  "immersive_bakery.moka_pot.no_heat": "Needs a lit heat source below",
+  "immersive_bakery.moka_pot.take": "Right-click to take the moka pot with coffee"
 }

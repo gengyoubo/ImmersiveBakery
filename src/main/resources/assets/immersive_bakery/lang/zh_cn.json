@@ -22,5 +22,9 @@
   "immersive_bakery.book.tab.all": "全部配方",
   "immersive_bakery.book.tab.recent": "最近做过",
   "immersive_bakery.book.only_ready": "只显示现在能做的",
-  "immersive_bakery.book.showing_all": "显示全部"
+  "immersive_bakery.book.showing_all": "显示全部",
+  "immersive_bakery.moka_pot.insert": "放入咖啡粉",
+  "immersive_bakery.moka_pot.brewing": "正在煮咖啡",
+  "immersive_bakery.moka_pot.no_heat": "下方需要点燃的热源",
+  "immersive_bakery.moka_pot.take": "右键取走装有咖啡的摩卡壶"
 }

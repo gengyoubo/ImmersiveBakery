@@ -1,0 +1,16 @@
+{
+  "camera": {"position": [8, 17.5, -11], "target": [8, 5.2, 8], "fov": 34},
+  "work_plane": 6,
+  "idle_visible": false,
+  "interface": {"inventory_panel": false},
+  "inventory_drawer": {"side": "bottom", "style": "minimal", "always_open": true, "compact": true, "background": "#00000000", "slot_color": "#8C1E140C", "carry_size": 3},
+  "nodes": [
+    {"id": "mouth", "drop_zone": "grounds", "collider": {"from": [4.5, 3.2, 4.5], "to": [11.5, 11, 11.5]}},
+    {"id": "grounds", "pos": [8, 6.62, 8], "slot": {"slot": "grounds", "size": 2.2, "counts": "never", "highlight": false}},
+    {"id": "opening", "pos": [8, 6.53, 8], "pickable": false},
+    {"id": "pot", "pos": [8, 0, 8], "collider": {"from": [-3.6, 0, -2.6], "to": [3.6, 8, 2.6]}, "takes_items": true},
+    {"id": "room", "pos": [8, 0, 30], "collider": {"from": [-70, -70, 0], "to": [70, 70, 1]}, "takes_items": true},
+    {"id": "steam", "pos": [8, 7.8, 8], "pickable": false, "emitter": {"particle": "diegesis:steam", "rate": 4, "enabled": false, "spread": 0.6}},
+    {"id": "timer", "pos": [1.6, 8, 7], "rotation": [-58, 0, 0], "scale": 0.5, "hidden": true, "pickable": false, "children": [{"id": "timer_track", "pos": [0, 0.12, 0], "pickable": false}, {"id": "timer_fill", "pos": [0, 0.24, 0], "pickable": false}, {"id": "timer_icon", "pos": [0, 0.36, 0.33], "rotation": [90, 0, 0], "scale": 0.16, "visual": {"item": "minecraft:clock", "anchor": [8, 8, 8]}, "pickable": false}]}
+  ]
+}
