@@ -1,0 +1,54 @@
+{
+  "camera": {"position": [27, 23, -1], "target": [8, 4, 8], "fov": 39},
+  "work_plane": 8.5,
+  "idle_visible": false,
+  "inventory_drawer": {
+    "side": "bottom",
+    "style": "minimal",
+    "always_open": true,
+    "compact": true,
+    "background": "#00000000",
+    "slot_color": "#8C1E140C",
+    "carry_size": 4
+  },
+  "nodes": [
+    {
+      "id": "slot_0",
+      "pos": [8, 7, 6.5],
+      "collider": {"from": [-4, -0.25, -1.4], "to": [4, 5, 1.4]},
+      "takes_items": true
+    },
+    {
+      "id": "slot_1",
+      "pos": [8, 7, 9.5],
+      "collider": {"from": [-4, -0.25, -1.4], "to": [4, 5, 1.4]},
+      "takes_items": true
+    },
+    {
+      "id": "lever",
+      "pos": [13.5, 4.5, 8],
+      "collider": {"from": [-0.75, -3.75, -1.75], "to": [0.75, 0.75, 1.75]},
+      "takes_items": true
+    },
+    {
+      "id": "timer",
+      "pos": [5.5, 10.75, 1.5],
+      "rotation": [-58, -64, 0],
+      "scale": 0.52,
+      "hidden": true,
+      "pickable": false,
+      "children": [
+        {"id": "timer_track", "pos": [0, 0.12, 0], "pickable": false},
+        {"id": "timer_fill", "pos": [0, 0.24, 0], "pickable": false},
+        {
+          "id": "timer_icon",
+          "pos": [0, 0.36, 0.33],
+          "rotation": [90, 0, 0],
+          "scale": 0.16,
+          "visual": {"item": "bakeries:bake_sliced_toast", "anchor": [8, 8, 8]},
+          "pickable": false
+        }
+      ]
+    }
+  ]
+}

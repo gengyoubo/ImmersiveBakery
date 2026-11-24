@@ -1,0 +1,7 @@
+{
+  "immersive_bakery.toaster.insert": "放入可烤制的面包",
+  "immersive_bakery.toaster.take": "点击取出食材",
+  "immersive_bakery.toaster.press": "按下压杆开始烘烤",
+  "immersive_bakery.toaster.empty": "请先放入面包",
+  "immersive_bakery.toaster.finished": "烘烤完成，取出槽内的食材"
+}
