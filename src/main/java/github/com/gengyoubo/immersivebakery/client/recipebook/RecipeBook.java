@@ -43,7 +43,6 @@ import com.pockyl.diegesis.api.client.NodeView;
 import com.pockyl.diegesis.api.client.StationView;
 import com.pockyl.diegesis.api.scene.Transform;
 import github.com.gengyoubo.immersivebakery.ImmersiveBakery;
-import github.com.gengyoubo.immersivebakery.blender.BlenderStation;
 import net.minecraftforge.client.ForgeHooksClient;
 
 import java.util.ArrayList;
@@ -709,7 +708,7 @@ public final class RecipeBook implements NodePainter {
      */
     private static boolean focusedWithoutBook() {
         return DiegesisClient.focusedStation()
-                .map(focused -> !BlenderStation.ID.equals(focused.type().id()))
+                .map(focused -> focused.node("book_open").isEmpty())
                 .orElse(false);
     }
 

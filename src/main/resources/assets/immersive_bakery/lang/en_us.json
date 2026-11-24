@@ -19,6 +19,7 @@
   "immersive_bakery.blender.draw": "%s · draw with %s",
   "immersive_bakery.blender.holds_liquid": "Draw the liquid out of the bowl first",
   "immersive_bakery.book.seconds": "%s s",
+  "immersive_bakery.book.by_hand": "by hand",
   "immersive_bakery.book.tab.all": "All recipes",
   "immersive_bakery.book.tab.recent": "Made lately",
   "immersive_bakery.book.only_ready": "Showing what you can make",
@@ -37,5 +38,19 @@
   "immersive_bakery.stone_kiln.turn_from_left": "Push it in from the far left and swing it back to the middle",
   "immersive_bakery.stone_kiln.turn_from_right": "Push it in from the far right and swing it back to the middle",
   "immersive_bakery.stone_kiln.take": "It is done: take it out with the peel",
-  "immersive_bakery.stone_kiln.unload": "Take what lies on the peel off first"
+  "immersive_bakery.stone_kiln.unload": "Take what lies on the peel off first",
+  "immersive_bakery.dough_crafting_table.insert": "Put dough on the board",
+  "immersive_bakery.dough_crafting_table.pick": "Choose what to make",
+  "immersive_bakery.dough_crafting_table.roll": "Take the rolling pin and roll the dough out flat",
+  "immersive_bakery.dough_crafting_table.shape": "Press and hold the dough to shape it",
+  "immersive_bakery.dough_crafting_table.take": "Take what you made",
+  "immersive_bakery.dough_crafting_table.choice": "%s × %s",
+  "immersive_bakery.fermentation_tank.empty": "Put in whole wheat flour and water for yeast, or pour in a bucket of milk for cheese",
+  "immersive_bakery.fermentation_tank.flour": "Whole wheat flour %s/%s · no water yet",
+  "immersive_bakery.fermentation_tank.flour_with_water": "Whole wheat flour %s/%s · water added",
+  "immersive_bakery.fermentation_tank.milk": "Milk %s/%s · fill it up and add salt, or take it with a glass bottle",
+  "immersive_bakery.fermentation_tank.milk_full": "Milk %s/%s · add salt, or take it with a glass bottle",
+  "immersive_bakery.fermentation_tank.fermenting": "Fermenting",
+  "immersive_bakery.fermentation_tank.yeast": "%s bottles of yeast · take it with a glass bottle",
+  "immersive_bakery.fermentation_tank.cheese": "Click to take the cheese"
 }

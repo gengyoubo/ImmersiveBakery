@@ -1,11 +1,13 @@
 package github.com.gengyoubo.immersivebakery;
 
 import github.com.gengyoubo.immersivebakery.blender.BlenderStation;
+import github.com.gengyoubo.immersivebakery.dough.DoughStation;
 import github.com.gengyoubo.immersivebakery.fermentation.FermentationStation;
 import github.com.gengyoubo.immersivebakery.kiln.KilnStation;
 import github.com.gengyoubo.immersivebakery.moka.MokaPotStation;
 import github.com.gengyoubo.immersivebakery.oven.OvenStation;
 import github.com.gengyoubo.immersivebakery.rack.BreadRackStation;
+import github.com.gengyoubo.immersivebakery.tank.TankStation;
 import github.com.gengyoubo.immersivebakery.toaster.ToasterStation;
 import net.minecraftforge.fml.common.Mod;
 
@@ -21,5 +23,7 @@ public final class ImmersiveBakery {
         BreadRackStation.register();
         MokaPotStation.register();
         KilnStation.register();
+        DoughStation.register();
+        TankStation.register();
     }
 }
