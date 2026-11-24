@@ -36,14 +36,19 @@ public final class KilnClient implements StationBehavior {
     private static final SlotRef LOAD = SlotRef.of(KilnStation.LOAD, 0);
     private static final SlotRef HEARTH = SlotRef.of(KilnStation.HEARTH, 0);
     private static final float CAPTION_SECONDS = 4;
-    /** The middle of the kiln, and how far the blade is pulled out when the turn ends, scene pixels. */
+    /** The middle of the kiln, and how far in the blade is when it gets under the bread, stays there and comes out from under it, scene pixels. */
     private static final float MIDDLE = 8;
+    private static final float INSERTED_Z = 5;
+    private static final float UNDER_BREAD_Z = 6;
     private static final float PULLED_OUT_Z = 2;
+    /** Swinging, a hand goes round: it may come this far out before the peel does. */
+    private static final float PULLED_OUT_SWINGING_Z = -3;
     /** How the handle swings with the hand, as far as the mouth of the kiln allows, how much of it is a stroke, and from when it is clear to which side. */
     private static final float DEGREES_PER_PIXEL = 7;
     private static final float MOST_DEGREES = 26;
     private static final float STROKE_DEGREES = 24;
     private static final float SIDE_DEGREES = 3;
+    private static final float CATCH_UP = 0.15F;
     private static final float SLIDE_UNDER_SECONDS = 0.12F;
     private static final Set<StoneKilnBlockEntity> TURNED_BY_HAND = Collections.newSetFromMap(new WeakHashMap<>());
     private String hint = "";
@@ -72,7 +77,7 @@ public final class KilnClient implements StationBehavior {
                 if (turning != null && turning.under > 0) {
                     // A carried node goes where the hand goes; drawn, its blade stays under the bread.
                     Vector3f hand = node.scenePosition();
-                    pose.translate((MIDDLE - hand.x) * turning.under, 0, (MIDDLE - hand.z) * turning.under);
+                    pose.translate((MIDDLE - hand.x) * turning.under, 0, Math.max(0, UNDER_BREAD_Z - hand.z) * turning.kept * turning.under);
                     pose.mulPose(Axis.YP.rotationDegrees(-swing(hand) * turning.under));
                 }
                 pose.scale(16, 16, 16);
@@ -94,17 +99,9 @@ public final class KilnClient implements StationBehavior {
 
     @Override
     public void onEvent(StationView view, SceneEvent event) {
-        if (event instanceof SceneEvent.Contact contact && contact.touching() && "peel".equals(contact.node()) && "hearth".equals(contact.other())) {
-            if (view.state().getControl(KilnStation.WANTS_TURN) == 0) {
-                view.sendAction(KilnStation.ACTION_REACH, new CompoundTag());
-            } else if (view.state().getItem(LOAD).isEmpty()) {
-                if (turning == null) {
-                    turning = new Turning();
-                }
-                turning.insert();
-            }
-        } else if (event instanceof SceneEvent.Release release && "peel".equals(release.node()) && turning != null) {
-            turning.inserted = false;
+        if (event instanceof SceneEvent.Contact contact && contact.touching() && "peel".equals(contact.node()) && "hearth".equals(contact.other())
+                && view.state().getControl(KilnStation.WANTS_TURN) == 0) {
+            view.sendAction(KilnStation.ACTION_REACH, new CompoundTag());
         }
     }
 
@@ -125,15 +122,35 @@ public final class KilnClient implements StationBehavior {
     @Override
     public void frame(StationView view, float deltaSeconds) {
         NodeView peel = view.node("peel").orElse(null);
-        if (turning == null || peel == null || !(view.level().getBlockEntity(view.pos()) instanceof StoneKilnBlockEntity kiln)) {
+        if (peel == null || !(view.level().getBlockEntity(view.pos()) instanceof StoneKilnBlockEntity kiln)) {
             return;
         }
+        // Where the peel is tells whether it is in, not what led there: it may wait in the kiln for the turn or leave the hand in there.
         Vector3f hand = peel.scenePosition();
-        if (hand.z < PULLED_OUT_Z && turning.inserted) {
+        boolean wantsTurn = view.state().getControl(KilnStation.WANTS_TURN) > 0;
+        boolean free = wantsTurn && peel.isHeld() && view.state().getItem(LOAD).isEmpty();
+        if (turning != null && turning.done) {
+            turning.settled |= !wantsTurn;
+        }
+        if (free && hand.z > INSERTED_Z) {
+            if (turning == null || turning.settled) {
+                turning = new Turning(turning);
+                turning.insert();
+                refresh(view);
+            } else if (!turning.inserted && !turning.done) {
+                turning.insert();
+            }
+        }
+        if (turning == null) {
+            return;
+        }
+        if (turning.inserted && (!peel.isHeld() || hand.z < (turning.isSwinging() ? PULLED_OUT_SWINGING_Z : PULLED_OUT_Z))) {
             turning.pullOut();
             refresh(view);
         }
-        turning.under = Mth.clamp(turning.under + (turning.inserted ? deltaSeconds : -deltaSeconds) / SLIDE_UNDER_SECONDS, 0, 1);
+        float slide = deltaSeconds / SLIDE_UNDER_SECONDS;
+        turning.under = Mth.clamp(turning.under + (turning.inserted ? slide : -slide), 0, 1);
+        turning.kept = Mth.clamp(turning.kept + (turning.inserted && !turning.strokeDone ? slide : -slide), 0, 1);
         if (turning.done) {
             if (!turning.inserted && turning.under == 0) {
                 turning = null;
@@ -170,23 +187,38 @@ public final class KilnClient implements StationBehavior {
     /** A bread being turned. Angles are the handle's, to the side it is swung to. */
     private static final class Turning {
         private boolean inserted;
-        /** How far the blade has slid under the bread, 0 to 1. */
+        /** How far the blade has slid under the bread, and how firmly it is kept there however far out the hand is, 0 to 1. */
         private float under;
+        private float kept;
         private int side;
         private float entered = Float.NaN;
         private float start;
         private float stroke;
+        /** Whether the hand, in again in the middle of a stroke, is where it left the bread. */
+        private boolean caughtUp;
         private boolean secondStroke;
         private boolean strokeDone;
         private boolean done;
+        /** Whether the kiln knows it is done, and the next turn may start. */
+        private boolean settled;
         /** How far Bakeries' animation, which counts half turns, is moved on by now. */
         private float turned;
 
-        private void insert() {
-            if (!inserted) {
-                inserted = true;
-                entered = Float.NaN;
+        private Turning(@Nullable Turning last) {
+            if (last != null) {
+                under = last.under;
+                kept = last.kept;
             }
+        }
+
+        private void insert() {
+            inserted = true;
+            entered = Float.NaN;
+            caughtUp = false;
+        }
+
+        private boolean isSwinging() {
+            return stroke > 0 && !strokeDone;
         }
 
         private void pullOut() {
@@ -201,7 +233,9 @@ public final class KilnClient implements StationBehavior {
         private void swing(float angle) {
             if (Float.isNaN(entered)) {
                 entered = angle;
-                start = angle * side;
+                if (stroke == 0) {
+                    start = angle * side;
+                }
             }
             if (side == 0) {
                 if (Math.abs(angle - entered) < SIDE_DEGREES) {
@@ -211,8 +245,10 @@ public final class KilnClient implements StationBehavior {
                 start = entered * side;
             }
             float at = angle * side;
-            // Swung back, the peel slides under the bread and leaves it as it lies.
-            start = Math.min(start, at);
+            if (stroke == 0) {
+                // Swung back, the peel slides under the bread and leaves it as it lies.
+                start = Math.min(start, at);
+            }
             float from = secondStroke ? start : Math.max(0, start);
             float to = secondStroke ? 0 : STROKE_DEGREES;
             boolean entersWell = secondStroke ? from <= -STROKE_DEGREES / 2 : from <= STROKE_DEGREES / 2;
@@ -220,7 +256,8 @@ public final class KilnClient implements StationBehavior {
                 return;
             }
             float further = Mth.clamp((at - from) / (to - from), 0, 1) - stroke;
-            if (further > 0) {
+            caughtUp |= further < CATCH_UP;
+            if (caughtUp && further > 0) {
                 stroke += further;
                 turned -= side * further / 2;
                 strokeDone = stroke >= 0.98F;
