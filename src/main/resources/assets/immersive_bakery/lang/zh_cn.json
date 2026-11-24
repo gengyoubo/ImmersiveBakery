@@ -26,5 +26,16 @@
   "immersive_bakery.moka_pot.insert": "放入咖啡粉",
   "immersive_bakery.moka_pot.brewing": "正在煮咖啡",
   "immersive_bakery.moka_pot.no_heat": "下方需要点燃的热源",
-  "immersive_bakery.moka_pot.take": "右键取走装有咖啡的摩卡壶"
+  "immersive_bakery.moka_pot.take": "右键取走装有咖啡的摩卡壶",
+  "immersive_bakery.stone_kiln.no_peel": "需要一把炉铲",
+  "immersive_bakery.stone_kiln.insert": "把生半成品放到炉铲上",
+  "immersive_bakery.stone_kiln.put": "拿起炉铲，把它送进炉里",
+  "immersive_bakery.stone_kiln.baking": "烘烤中",
+  "immersive_bakery.stone_kiln.unlit": "石窑炉没有点燃",
+  "immersive_bakery.stone_kiln.turn": "该翻面了：炉铲从中间插到下面，往一侧转到底",
+  "immersive_bakery.stone_kiln.turn_out": "把炉铲拿出来",
+  "immersive_bakery.stone_kiln.turn_from_left": "从最左边插进去，再转回中间",
+  "immersive_bakery.stone_kiln.turn_from_right": "从最右边插进去，再转回中间",
+  "immersive_bakery.stone_kiln.take": "烤好了：拿起炉铲把它铲出来",
+  "immersive_bakery.stone_kiln.unload": "先取下炉铲上的东西"
 }

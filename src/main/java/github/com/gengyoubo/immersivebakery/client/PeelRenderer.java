@@ -1,0 +1,112 @@
+package github.com.gengyoubo.immersivebakery.client;
+
+import com.mojang.blaze3d.vertex.PoseStack;
+import com.mojang.math.Axis;
+import github.com.gengyoubo.immersivebakery.kiln.Peel;
+import java.util.Map;
+import java.util.WeakHashMap;
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.renderer.BlockEntityWithoutLevelRenderer;
+import net.minecraft.client.renderer.MultiBufferSource;
+import net.minecraft.client.resources.model.BakedModel;
+import net.minecraft.core.Direction;
+import net.minecraft.util.RandomSource;
+import net.minecraft.world.item.BlockItem;
+import net.minecraft.world.item.ItemDisplayContext;
+import net.minecraft.world.item.ItemStack;
+import net.minecraftforge.client.extensions.common.IClientItemExtensions;
+import net.minecraftforge.client.model.data.ModelData;
+
+/** Draws a peel with what lies on its blade. */
+public final class PeelRenderer extends BlockEntityWithoutLevelRenderer {
+    public static final IClientItemExtensions EXTENSIONS = new IClientItemExtensions() {
+        private PeelRenderer renderer;
+
+        @Override
+        public BlockEntityWithoutLevelRenderer getCustomRenderer() {
+            if (renderer == null) {
+                renderer = new PeelRenderer();
+            }
+            return renderer;
+        }
+    };
+    /** The middle of the blade's upper face in the peel's model, pixels. */
+    static final float BLADE_X = 8.5F;
+    static final float BLADE_Y = 27.5F;
+    static final float BLADE_Z = 1;
+    private static final float LOAD_SIZE = 9 / 16.0F;
+    /** Bakeries shows what is in the kiln at half the size of an item frame. */
+    private static final float KILN_SCALE = 0.5F;
+    private static final Map<BakedModel, Bounds> BOUNDS = new WeakHashMap<>();
+
+    private PeelRenderer() {
+        super(Minecraft.getInstance().getBlockEntityRenderDispatcher(), Minecraft.getInstance().getEntityModels());
+    }
+
+    @Override
+    public void renderByItem(ItemStack peel, ItemDisplayContext context, PoseStack pose, MultiBufferSource buffers, int light, int overlay) {
+        var renderer = Minecraft.getInstance().getItemRenderer();
+        if (renderer.getModel(peel, null, null, 0) instanceof PeelModel.Loaded model) {
+            pose.pushPose();
+            pose.translate(0.5F, 0.5F, 0.5F);
+            renderer.render(peel, ItemDisplayContext.NONE, false, pose, buffers, light, overlay, model.empty());
+            pose.popPose();
+        }
+        pose.pushPose();
+        pose.translate(BLADE_X / 16, BLADE_Y / 16, BLADE_Z / 16);
+        // The load's up is the blade's outside.
+        pose.mulPose(Axis.XP.rotationDegrees(90));
+        drawLying(Peel.load(peel), LOAD_SIZE, pose, buffers, light, overlay);
+        pose.popPose();
+    }
+
+    /** Draws an item lying on the origin, at most {@code size} wide: blocks and dough stand on their bottom, sprites lie. */
+    static void drawLying(ItemStack stack, float size, PoseStack pose, MultiBufferSource buffers, int light, int overlay) {
+        if (stack.isEmpty()) {
+            return;
+        }
+        var minecraft = Minecraft.getInstance();
+        var renderer = minecraft.getItemRenderer();
+        // Bakeries' kiln shows the block of a pizza, not its flat icon.
+        BakedModel model = stack.getItem() instanceof BlockItem item
+                ? minecraft.getBlockRenderer().getBlockModel(item.getBlock().defaultBlockState())
+                : renderer.getModel(stack, minecraft.level, null, 0);
+        Bounds bounds = BOUNDS.computeIfAbsent(model, Bounds::of);
+        float scale = Math.min(KILN_SCALE * model.getTransforms().getTransform(ItemDisplayContext.FIXED).scale.x(),
+                size / Math.max(0.01F, bounds.width()));
+        pose.pushPose();
+        pose.scale(scale, scale, scale);
+        if (model.isGui3d()) {
+            pose.translate(0.5F - bounds.middleX, 0.5F - bounds.bottom, 0.5F - bounds.middleZ);
+        } else {
+            pose.translate(0, 0.5F / 16, 0);
+            pose.mulPose(Axis.XP.rotationDegrees(-90));
+        }
+        renderer.render(stack, ItemDisplayContext.NONE, false, pose, buffers, light, overlay, model);
+        pose.popPose();
+    }
+
+    /** What a model takes up, blocks. */
+    private record Bounds(float middleX, float bottom, float middleZ, float width) {
+        static Bounds of(BakedModel model) {
+            float[] low = {Float.MAX_VALUE, Float.MAX_VALUE, Float.MAX_VALUE};
+            float[] high = {-Float.MAX_VALUE, -Float.MAX_VALUE, -Float.MAX_VALUE};
+            RandomSource random = RandomSource.create(0);
+            for (int side = 0; side <= 6; side++) {
+                for (var quad : model.getQuads(null, side == 6 ? null : Direction.from3DDataValue(side), random, ModelData.EMPTY, null)) {
+                    int[] vertices = quad.getVertices();
+                    int stride = vertices.length / 4;
+                    for (int vertex = 0; vertex < 4; vertex++) {
+                        for (int axis = 0; axis < 3; axis++) {
+                            float at = Float.intBitsToFloat(vertices[vertex * stride + axis]);
+                            low[axis] = Math.min(low[axis], at);
+                            high[axis] = Math.max(high[axis], at);
+                        }
+                    }
+                }
+            }
+            return high[0] < low[0] ? new Bounds(0.5F, 0, 0.5F, 1)
+                    : new Bounds((low[0] + high[0]) / 2, low[1], (low[2] + high[2]) / 2, Math.max(high[0] - low[0], high[2] - low[2]));
+        }
+    }
+}

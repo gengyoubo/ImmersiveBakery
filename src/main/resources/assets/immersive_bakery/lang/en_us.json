@@ -26,5 +26,16 @@
   "immersive_bakery.moka_pot.insert": "Put in ground coffee",
   "immersive_bakery.moka_pot.brewing": "Brewing",
   "immersive_bakery.moka_pot.no_heat": "Needs a lit heat source below",
-  "immersive_bakery.moka_pot.take": "Right-click to take the moka pot with coffee"
+  "immersive_bakery.moka_pot.take": "Right-click to take the moka pot with coffee",
+  "immersive_bakery.stone_kiln.no_peel": "Needs an oven peel",
+  "immersive_bakery.stone_kiln.insert": "Put dough on the peel",
+  "immersive_bakery.stone_kiln.put": "Take the peel and push it into the kiln",
+  "immersive_bakery.stone_kiln.baking": "Baking",
+  "immersive_bakery.stone_kiln.unlit": "The kiln is not lit",
+  "immersive_bakery.stone_kiln.turn": "Time to turn it: push the peel under it in the middle and swing it all the way to one side",
+  "immersive_bakery.stone_kiln.turn_out": "Pull the peel out",
+  "immersive_bakery.stone_kiln.turn_from_left": "Push it in from the far left and swing it back to the middle",
+  "immersive_bakery.stone_kiln.turn_from_right": "Push it in from the far right and swing it back to the middle",
+  "immersive_bakery.stone_kiln.take": "It is done: take it out with the peel",
+  "immersive_bakery.stone_kiln.unload": "Take what lies on the peel off first"
 }
