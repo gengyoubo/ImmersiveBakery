@@ -1,6 +1,8 @@
 package github.com.gengyoubo.immersivebakery.toaster;
 
 import com.pockyl.diegesis.api.Diegesis;
+import com.renyigesai.bakeries.block.toaster.ToasterBlock;
+import com.renyigesai.bakeries.block.toaster.ToasterBlock.State;
 import com.renyigesai.bakeries.block.toaster.ToasterBlockEntity;
 import com.renyigesai.bakeries.init.BakeriesBlocks;
 import github.com.gengyoubo.immersivebakery.ImmersiveBakery;
@@ -46,11 +48,13 @@ public final class ToasterStation {
     }
 
     @SubscribeEvent(priority = EventPriority.LOWEST)
-    public static void restrictDirectInsertion(PlayerInteractEvent.RightClickBlock event) {
+    public static void restrictDirectUse(PlayerInteractEvent.RightClickBlock event) {
+        if (!(event.getLevel().getBlockEntity(event.getPos()) instanceof ToasterBlockEntity toaster)) {
+            return;
+        }
         ItemStack held = event.getItemStack();
-        if (!held.isEmpty() && !held.is(TOASTABLE_BREAD)
-                && event.getLevel().getBlockEntity(event.getPos()) instanceof ToasterBlockEntity toaster
-                && toaster.getSmokerRecipe(held).isPresent()) {
+        if (toaster.getBlockState().getValue(ToasterBlock.STATE) == State.LIT
+                || (!held.isEmpty() && !held.is(TOASTABLE_BREAD) && toaster.getSmokerRecipe(held).isPresent())) {
             event.setUseBlock(Event.Result.DENY);
         }
     }

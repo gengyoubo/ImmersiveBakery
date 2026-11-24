@@ -3,5 +3,9 @@
   "immersive_bakery.toaster.take": "点击取出食材",
   "immersive_bakery.toaster.press": "按下压杆开始烘烤",
   "immersive_bakery.toaster.empty": "请先放入面包",
-  "immersive_bakery.toaster.finished": "烘烤完成，取出槽内的食材"
+  "immersive_bakery.toaster.finished": "烘烤完成，取出槽内的食材",
+  "immersive_bakery.oven.increase_temperature": "升温 · %s °C 一档",
+  "immersive_bakery.oven.decrease_temperature": "降温 · %s °C 一档",
+  "immersive_bakery.oven.power_on": "启动烤炉",
+  "immersive_bakery.oven.power_off": "暂停烘烤"
 }

@@ -21,7 +21,7 @@ import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
 @Mod.EventBusSubscriber(modid = ImmersiveBakery.MOD_ID, bus = Mod.EventBusSubscriber.Bus.MOD, value = Dist.CLIENT)
 public final class ToasterClient implements StationBehavior {
     private static final String LANG = "immersive_bakery.toaster.";
-    private final ToasterTimer timer = new ToasterTimer();
+    private final BakingTimer timer = new BakingTimer();
 
     @SubscribeEvent
     public static void setup(FMLClientSetupEvent event) {
@@ -60,7 +60,13 @@ public final class ToasterClient implements StationBehavior {
 
         State state = toaster.getBlockState().getValue(ToasterBlock.STATE);
         int remaining = view.state().data().getInt(ToasterStation.REMAINING_TICKS);
-        timer.update(view, state, toaster.isEmpty(), remaining);
+        int total = view.state().data().getInt(ToasterStation.TOTAL_TICKS);
+        float remainingFraction = switch (state) {
+            case IDLE -> 1;
+            case LIT -> total > 0 ? (float) remaining / total : 1;
+            case FINISH -> 0;
+        };
+        timer.update(view, !toaster.isEmpty(), remainingFraction);
         String leverTooltip = switch (state) {
             case LIT -> null;
             case FINISH -> "finished";

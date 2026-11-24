@@ -1,0 +1,7 @@
+{
+  "parent": "diegesis:diegesis/control/button",
+  "textures": {
+    "particle": "minecraft:block/light_gray_concrete",
+    "red_concrete": "minecraft:block/light_gray_concrete"
+  }
+}

@@ -17,6 +17,7 @@ minecraft {
     runs {
         configureEach {
             workingDirectory project.file('run')
+            args '--mixin.config', "${mod_id}.mixins.json"
             property 'forge.logging.markers', 'REGISTRIES'
             property 'forge.logging.console.level', 'debug'
             // Remap dependency refmaps from SRG to the development mappings.
@@ -79,7 +80,8 @@ tasks.named('jar', Jar).configure {
                 'Implementation-Title'    : project.name,
                 'Implementation-Version'  : project.jar.archiveVersion,
                 'Implementation-Vendor'   : mod_authors,
-                'Implementation-Timestamp': new Date().format("yyyy-MM-dd'T'HH:mm:ssZ")
+                'Implementation-Timestamp': new Date().format("yyyy-MM-dd'T'HH:mm:ssZ"),
+                'MixinConfigs'             : "${mod_id}.mixins.json"
         ])
     }
     finalizedBy 'reobfJar'
