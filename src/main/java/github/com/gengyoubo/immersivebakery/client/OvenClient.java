@@ -8,8 +8,6 @@ import com.pockyl.diegesis.api.state.StationState;
 import com.renyigesai.bakeries.block.oven.OvenBlockEntity;
 import github.com.gengyoubo.immersivebakery.ImmersiveBakery;
 import github.com.gengyoubo.immersivebakery.oven.OvenStation;
-import java.lang.ref.WeakReference;
-import net.minecraft.Util;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.sounds.SoundEvents;
@@ -21,9 +19,7 @@ import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
 
 @Mod.EventBusSubscriber(modid = ImmersiveBakery.MOD_ID, bus = Mod.EventBusSubscriber.Bus.MOD, value = Dist.CLIENT)
 public final class OvenClient implements StationBehavior {
-    private static WeakReference<OvenBlockEntity> pressedOven = new WeakReference<>(null);
-    private static long increasePressedAt;
-    private static long decreasePressedAt;
+    private static final WorkBlockButtons BUTTONS = new WorkBlockButtons();
     private final BakingTimer timer = new BakingTimer();
 
     @SubscribeEvent
@@ -79,29 +75,12 @@ public final class OvenClient implements StationBehavior {
     }
 
     public static float buttonTravel(OvenBlockEntity oven, String control) {
-        if (pressedOven.get() != oven) {
-            return 0;
-        }
-        long pressedAt = OvenStation.INCREASE.equals(control) ? increasePressedAt : decreasePressedAt;
-        if (pressedAt == 0) {
-            return 0;
-        }
-        long elapsed = Util.getMillis() - pressedAt;
-        return 0.78F * Math.max(0, 1 - Math.max(0, elapsed - 55) / 120.0F);
+        return BUTTONS.travel(oven, control);
     }
 
     private static void animateTemperaturePress(StationView view, String control) {
         if (view.level().getBlockEntity(view.pos()) instanceof OvenBlockEntity oven) {
-            if (pressedOven.get() != oven) {
-                pressedOven = new WeakReference<>(oven);
-                increasePressedAt = 0;
-                decreasePressedAt = 0;
-            }
-            if (OvenStation.INCREASE.equals(control)) {
-                increasePressedAt = Util.getMillis();
-            } else {
-                decreasePressedAt = Util.getMillis();
-            }
+            BUTTONS.press(oven, control);
         }
     }
 

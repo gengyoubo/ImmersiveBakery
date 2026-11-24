@@ -3,7 +3,7 @@
   "minVersion": "0.8.5",
   "package": "github.com.gengyoubo.immersivebakery.mixin",
   "compatibilityLevel": "JAVA_17",
-  "mixins": ["OvenBlockEntityMixin", "OvenMenuMixin"],
+  "mixins": ["OvenBlockEntityMixin", "OvenMenuMixin", "FermentationBoxBlockEntityMixin", "FermentationBoxMenuMixin"],
   "client": ["OvenRenderMixin", "FermentationBoxRenderMixin", "BreadRackRenderMixin"],
   "injectors": {"defaultRequire": 1}
 }

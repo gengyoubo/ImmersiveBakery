@@ -41,8 +41,10 @@ final class OvenPanel {
     static void drawLabel(PoseStack pose, MultiBufferSource buffers, String label, float scale, int background) {
         Font font = Minecraft.getInstance().font;
         pose.pushPose();
-        pose.scale(-scale, -scale, scale);
-        font.drawInBatch(label, -font.width(label) / 2.0F, -(font.lineHeight - 1) / 2.0F, 0xFFF2EDE4, true,
+        // Font puts glyphs in front of their shadow along +z, but a background behind its glyphs along -z.
+        boolean shadow = background == 0;
+        pose.scale(-scale, -scale, shadow ? -scale : scale);
+        font.drawInBatch(label, -font.width(label) / 2.0F, -(font.lineHeight - 1) / 2.0F, 0xFFF2EDE4, shadow,
                 pose.last().pose(), buffers, Font.DisplayMode.NORMAL, background, LightTexture.FULL_BRIGHT);
         pose.popPose();
     }

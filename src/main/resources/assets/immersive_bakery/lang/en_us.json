@@ -7,5 +7,9 @@
   "immersive_bakery.oven.increase_temperature": "Raise temperature · %s °C steps",
   "immersive_bakery.oven.decrease_temperature": "Lower temperature · %s °C steps",
   "immersive_bakery.oven.power_on": "Start oven",
-  "immersive_bakery.oven.power_off": "Pause baking"
+  "immersive_bakery.oven.power_off": "Pause baking",
+  "immersive_bakery.fermentation_box.increase_duration": "Longer proofing · %s tick steps",
+  "immersive_bakery.fermentation_box.decrease_duration": "Shorter proofing · %s tick steps",
+  "immersive_bakery.fermentation_box.power_on": "Start proofing",
+  "immersive_bakery.fermentation_box.power_off": "Pause proofing"
 }

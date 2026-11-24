@@ -7,5 +7,9 @@
   "immersive_bakery.oven.increase_temperature": "升温 · %s °C 一档",
   "immersive_bakery.oven.decrease_temperature": "降温 · %s °C 一档",
   "immersive_bakery.oven.power_on": "启动烤炉",
-  "immersive_bakery.oven.power_off": "暂停烘烤"
+  "immersive_bakery.oven.power_off": "暂停烘烤",
+  "immersive_bakery.fermentation_box.increase_duration": "延长醒发 · %s tick 一档",
+  "immersive_bakery.fermentation_box.decrease_duration": "缩短醒发 · %s tick 一档",
+  "immersive_bakery.fermentation_box.power_on": "启动醒发箱",
+  "immersive_bakery.fermentation_box.power_off": "暂停醒发"
 }

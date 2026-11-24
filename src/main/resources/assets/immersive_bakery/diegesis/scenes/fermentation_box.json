@@ -1,0 +1,104 @@
+{
+  "camera": {"position": [7, 16.5, -26], "target": [7, 7.8, 7], "fov": 39},
+  "work_plane": 10,
+  "idle_visible": false,
+  "interface": {"inventory_panel": false},
+  "inventory_drawer": {
+    "side": "bottom",
+    "style": "minimal",
+    "always_open": true,
+    "compact": true,
+    "background": "#00000000",
+    "slot_color": "#8C1E140C",
+    "carry_size": 4
+  },
+  "nodes": [
+    {
+      "id": "rack_0", "pos": [11.6, 8.5, 8],
+      "collider": {"from": [-1.75, -0.5, -2.5], "to": [1.75, 3.1, 2.5]},
+      "slot": {"slot": "rack[0]", "display": "hidden", "size": 3.2, "idle_highlight": 0.2}
+    },
+    {
+      "id": "rack_1", "pos": [8, 8.5, 8],
+      "collider": {"from": [-1.75, -0.5, -2.5], "to": [1.75, 3.1, 2.5]},
+      "slot": {"slot": "rack[1]", "display": "hidden", "size": 3.2, "idle_highlight": 0.2}
+    },
+    {
+      "id": "rack_2", "pos": [4.4, 8.5, 8],
+      "collider": {"from": [-1.75, -0.5, -2.5], "to": [1.75, 3.1, 2.5]},
+      "slot": {"slot": "rack[2]", "display": "hidden", "size": 3.2, "idle_highlight": 0.2}
+    },
+    {
+      "id": "rack_3", "pos": [11.6, 3.5, 8],
+      "collider": {"from": [-1.75, -0.5, -2.5], "to": [1.75, 3.1, 2.5]},
+      "slot": {"slot": "rack[3]", "display": "hidden", "size": 3.2, "idle_highlight": 0.2}
+    },
+    {
+      "id": "rack_4", "pos": [8, 3.5, 8],
+      "collider": {"from": [-1.75, -0.5, -2.5], "to": [1.75, 3.1, 2.5]},
+      "slot": {"slot": "rack[4]", "display": "hidden", "size": 3.2, "idle_highlight": 0.2}
+    },
+    {
+      "id": "rack_5", "pos": [4.4, 3.5, 8],
+      "collider": {"from": [-1.75, -0.5, -2.5], "to": [1.75, 3.1, 2.5]},
+      "slot": {"slot": "rack[5]", "display": "hidden", "size": 3.2, "idle_highlight": 0.2}
+    },
+    {
+      "id": "decrease_duration",
+      "pos": [13, 14.5, 0],
+      "control": {"control": "decrease_duration", "type": "button", "axis": [0, 0, 1], "range": [0, 0.78]},
+      "collider": {"from": [-1.25, -1.25, -0.8], "to": [1.25, 1.25, 1.15]},
+      "takes_items": true,
+      "children": [
+        {"id": "decrease_duration_label", "pos": [0, 0, -0.05], "pickable": false}
+      ]
+    },
+    {
+      "id": "increase_duration",
+      "pos": [8, 14.5, 0],
+      "control": {"control": "increase_duration", "type": "button", "axis": [0, 0, 1], "range": [0, 0.78]},
+      "collider": {"from": [-1.25, -1.25, -0.8], "to": [1.25, 1.25, 1.15]},
+      "takes_items": true,
+      "children": [
+        {"id": "increase_duration_label", "pos": [0, 0, -0.05], "pickable": false}
+      ]
+    },
+    {
+      "id": "power",
+      "template": "diegesis:control/button",
+      "pos": [10.5, 14.5, 0.9],
+      "rotation": [-90, 0, 0],
+      "scale": 0.34,
+      "visual": {"model": "immersive_bakery:diegesis/oven_power_button"},
+      "control": {"control": "power", "range": [0, 1.5]},
+      "collider": {"from": [-3, 0, -3], "to": [3, 5.25, 3]},
+      "children": [
+        {"id": "power_label", "pos": [0, 5.2, 0], "rotation": [90, 0, 0], "pickable": false}
+      ]
+    },
+    {
+      "id": "gauge",
+      "pos": [3.5, 14.5, 0.9],
+      "collider": {"from": [-1.75, -1.25, -0.4], "to": [1.75, 1.25, 0.1]}
+    },
+    {
+      "id": "timer",
+      "pos": [-3.6, 13.3, -0.2],
+      "rotation": [-90, 0, 0],
+      "scale": 0.52,
+      "hidden": true,
+      "pickable": false,
+      "children": [
+        {"id": "timer_track", "pos": [0, 0.12, 0], "pickable": false},
+        {"id": "timer_fill", "pos": [0, 0.24, 0], "pickable": false},
+        {
+          "id": "timer_icon", "pos": [0, 0.36, 0.33],
+          "rotation": [90, 0, 0],
+          "scale": 0.16,
+          "visual": {"item": "minecraft:clock", "anchor": [8, 8, 8]},
+          "pickable": false
+        }
+      ]
+    }
+  ]
+}
