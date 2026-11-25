@@ -1,5 +1,6 @@
 package github.com.gengyoubo.immersivebakery;
 
+import github.com.gengyoubo.immersivebakery.api.player.PlayerImmersionNetwork;
 import github.com.gengyoubo.immersivebakery.basket.BreadBasketStation;
 import github.com.gengyoubo.immersivebakery.blender.BlenderStation;
 import github.com.gengyoubo.immersivebakery.box.CakeBoxStation;
@@ -11,6 +12,7 @@ import github.com.gengyoubo.immersivebakery.kiln.KilnStation;
 import github.com.gengyoubo.immersivebakery.moka.MokaPotStation;
 import github.com.gengyoubo.immersivebakery.oven.OvenStation;
 import github.com.gengyoubo.immersivebakery.rack.BreadRackStation;
+import github.com.gengyoubo.immersivebakery.sieve.FlourSieve;
 import github.com.gengyoubo.immersivebakery.storage.CupboardStation;
 import github.com.gengyoubo.immersivebakery.tank.TankStation;
 import github.com.gengyoubo.immersivebakery.toaster.ToasterStation;
@@ -21,6 +23,7 @@ public final class ImmersiveBakery {
     public static final String MOD_ID = "immersive_bakery";
 
     public ImmersiveBakery() {
+        PlayerImmersionNetwork.register();
         ToasterStation.register();
         OvenStation.register();
         FermentationStation.register();
@@ -35,5 +38,6 @@ public final class ImmersiveBakery {
         CakeBoxStation.register();
         BreadBasketStation.register();
         CupboardStation.register();
+        FlourSieve.register();
     }
 }
