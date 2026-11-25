@@ -1,0 +1,21 @@
+{
+  "camera": {"position": [8, 31, -5], "target": [8, 4, 7], "fov": 34},
+  "work_plane": 6,
+  "idle_visible": true,
+  "interface": {"inventory_panel": false, "hide_player": true},
+  "inventory_drawer": {"side": "bottom", "style": "minimal", "always_open": true, "compact": true, "background": "#00000000", "slot_color": "#8C1E140C", "carry_size": 4},
+  "placing": {
+    "group": "breads",
+    "item_size": 5,
+    "scale_range": [0.4, 1.2],
+    "stack_shrink": 0.5,
+    "counts": "hover",
+    "surfaces": [
+      {"from": [5, 5], "to": [11, 11], "height": 1, "clearance": 12, "flat_rest": "lie", "fill": "back"}
+    ],
+    "physics": {}
+  },
+  "nodes": [
+    {"id": "basket", "pos": [0, 0, 0], "pickable": false}
+  ]
+}

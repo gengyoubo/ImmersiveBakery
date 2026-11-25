@@ -104,6 +104,12 @@ public final class PeelRenderer extends BlockEntityWithoutLevelRenderer {
                 : new Vector3f(bounds.sizeX, bounds.sizeZ, bounds.sizeY).mul(scale);
     }
 
+    /** What a model takes up with its longest side so long: across, up and deep. */
+    static Vector3f sizeOf(ItemStack stack, float longest) {
+        Bounds bounds = BOUNDS.computeIfAbsent(model(stack), Bounds::of);
+        return new Vector3f(bounds.sizeX, bounds.sizeY, bounds.sizeZ).mul(longest / Math.max(0.01F, Math.max(bounds.width(), bounds.sizeY)));
+    }
+
     private static float scale(BakedModel model, Bounds bounds, float size) {
         return Math.min(KILN_SCALE * model.getTransforms().getTransform(ItemDisplayContext.FIXED).scale.x(), size / Math.max(0.01F, bounds.width()));
     }

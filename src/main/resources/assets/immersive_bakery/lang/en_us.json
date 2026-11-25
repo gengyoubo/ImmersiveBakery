@@ -67,5 +67,7 @@
   "immersive_bakery.cake_box.open": "Lift the lid",
   "immersive_bakery.cake_box.put": "Put in a cake",
   "immersive_bakery.cake_box.take": "Take out the cake",
-  "immersive_bakery.cake_box.close": "Close the lid"
+  "immersive_bakery.cake_box.close": "Close the lid",
+  "immersive_bakery.bread_basket.full": "No room left in the basket",
+  "immersive_bakery.bread_basket.hint": "Scroll to turn · Shift+scroll to tilt · Ctrl+scroll to resize"
 }

@@ -67,5 +67,7 @@
   "immersive_bakery.cake_box.open": "提起盖子",
   "immersive_bakery.cake_box.put": "放入蛋糕",
   "immersive_bakery.cake_box.take": "取出蛋糕",
-  "immersive_bakery.cake_box.close": "盖上盖子"
+  "immersive_bakery.cake_box.close": "盖上盖子",
+  "immersive_bakery.bread_basket.full": "篮子里放不下了",
+  "immersive_bakery.bread_basket.hint": "滚轮旋转 · Shift+滚轮倾斜 · Ctrl+滚轮缩放"
 }
