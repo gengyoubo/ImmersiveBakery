@@ -1,7 +1,7 @@
 /*
  * Taken from Hands-On Delight (https://github.com/Pocky-l/handson-delight), Copyright (c) 2026 Pocky, MIT License:
  * see META-INF/licenses/hands-on-delight.txt. Changed: no stars, no config, the stations and
- * language keys of this mod, a book that hangs on another node.
+ * language keys of this mod, a book that hangs on another node, an icon of the source.
  */
 package github.com.gengyoubo.immersivebakery.client.recipebook;
 
@@ -495,6 +495,11 @@ public final class RecipeBook implements NodePainter {
          */
         default List<Tab> tabs(StationView view) {
             return List.of();
+        }
+
+        /** What stands for the station on the switch that shows only what can be made now. */
+        default Item icon(StationView view) {
+            return view.level().getBlockState(view.pos()).getBlock().asItem();
         }
 
         /** Under which name the chosen tab is remembered on the client: one per station type. */
@@ -1040,7 +1045,7 @@ public final class RecipeBook implements NodePainter {
             refresh = REFRESH_TIME;
             read(view);
         }
-        Item block = view.level().getBlockState(view.pos()).getBlock().asItem();
+        Item block = source.icon(view);
         if (filterIcon.getItem() != block) {
             filterIcon = new ItemStack(block);
         }
