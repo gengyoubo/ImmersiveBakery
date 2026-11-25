@@ -3,7 +3,7 @@
   "minVersion": "0.8.5",
   "package": "github.com.gengyoubo.immersivebakery.mixin",
   "compatibilityLevel": "JAVA_17",
-  "mixins": ["OvenBlockEntityMixin", "OvenMenuMixin", "FermentationBoxBlockEntityMixin", "FermentationBoxMenuMixin", "BlenderBlockEntityMixin", "BlenderMenuMixin", "BreadRackBlockEntityMixin", "BreadBasketBlockEntityMixin", "MokaPotBlockEntityMixin", "BakeriesEventsMixin"],
+  "mixins": ["OvenBlockEntityMixin", "OvenMenuMixin", "FermentationBoxBlockEntityMixin", "FermentationBoxMenuMixin", "BlenderBlockEntityMixin", "BlenderMenuMixin", "BreadRackBlockEntityMixin", "BreadBasketBlockEntityMixin", "CupboardBlockEntityMixin", "MokaPotBlockEntityMixin", "BakeriesEventsMixin"],
   "client": ["OvenRenderMixin", "ToasterRenderMixin", "ToasterBlockEntityMixin", "FermentationBoxRenderMixin", "BreadRackRenderMixin", "BlenderRendererMixin", "MokaPotRenderMixin", "CakeBoxRenderMixin", "StoneKilnShovelItemMixin", "StoneKilnOverlayMixin", "GlassDrinkCupOverlayMixin", "StoneKilnRenderMixin", "StoneKilnBlockEntityMixin"],
   "injectors": {"defaultRequire": 1}
 }

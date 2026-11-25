@@ -39,7 +39,7 @@
   "immersive_bakery.stone_kiln.turn_from_right": "Push it in from the far right and swing it back to the middle",
   "immersive_bakery.stone_kiln.take": "It is done: take it out with the peel",
   "immersive_bakery.stone_kiln.unload": "Take what lies on the peel off first",
-  "immersive_bakery.dough_crafting_table.insert": "Put dough on the board",
+  "immersive_bakery.dough_crafting_table.insert": "Put dough on the board · S: drawers",
   "immersive_bakery.dough_crafting_table.pick": "Choose what to make",
   "immersive_bakery.dough_crafting_table.roll": "Take the rolling pin and roll the dough out flat",
   "immersive_bakery.dough_crafting_table.divide": "Press and hold the dough to divide it into %s pieces",
@@ -69,5 +69,8 @@
   "immersive_bakery.cake_box.take": "Take out the cake",
   "immersive_bakery.cake_box.close": "Close the lid",
   "immersive_bakery.bread_basket.full": "No room left in the basket",
-  "immersive_bakery.bread_basket.hint": "Scroll to turn · Shift+scroll to tilt · Ctrl+scroll to resize"
+  "immersive_bakery.placed_items.hint": "Scroll to turn · Shift+scroll to tilt · Ctrl+scroll to resize",
+  "immersive_bakery.drawers.pull": "Click a drawer to pull it out or push it in",
+  "immersive_bakery.drawers.full": "No room left in the drawer",
+  "immersive_bakery.drawers.pull_or_board": "Click a drawer to pull it out or push it in · W: board"
 }

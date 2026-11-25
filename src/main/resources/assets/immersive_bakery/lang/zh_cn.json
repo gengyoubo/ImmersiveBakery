@@ -39,7 +39,7 @@
   "immersive_bakery.stone_kiln.turn_from_right": "从最右边插进去，再转回中间",
   "immersive_bakery.stone_kiln.take": "烤好了：拿起炉铲把它铲出来",
   "immersive_bakery.stone_kiln.unload": "先取下炉铲上的东西",
-  "immersive_bakery.dough_crafting_table.insert": "把面团放到案板上",
+  "immersive_bakery.dough_crafting_table.insert": "把面团放到案板上 · S 看抽屉",
   "immersive_bakery.dough_crafting_table.pick": "选择要做的面胚",
   "immersive_bakery.dough_crafting_table.roll": "拿起擀面杖，把面团来回擀成饼",
   "immersive_bakery.dough_crafting_table.divide": "长按面团，分成 %s 块",
@@ -69,5 +69,8 @@
   "immersive_bakery.cake_box.take": "取出蛋糕",
   "immersive_bakery.cake_box.close": "盖上盖子",
   "immersive_bakery.bread_basket.full": "篮子里放不下了",
-  "immersive_bakery.bread_basket.hint": "滚轮旋转 · Shift+滚轮倾斜 · Ctrl+滚轮缩放"
+  "immersive_bakery.placed_items.hint": "滚轮旋转 · Shift+滚轮倾斜 · Ctrl+滚轮缩放",
+  "immersive_bakery.drawers.pull": "点击抽屉拉开或推回",
+  "immersive_bakery.drawers.full": "抽屉里放不下了",
+  "immersive_bakery.drawers.pull_or_board": "点击抽屉拉开或推回 · W 看案板"
 }

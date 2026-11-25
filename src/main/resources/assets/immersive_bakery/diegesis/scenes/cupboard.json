@@ -1,0 +1,32 @@
+{
+  "camera": {"position": [8, 36, -18], "target": [8, 8, 2], "fov": 38, "interactive_at": 0.6,
+    "glances": [
+      {"id": "side_1", "position": [34, 36, 8], "target": [14, 8, 8], "fov": 38, "time": 0.4, "back_on_take": false, "back_zone": 0, "hint": false},
+      {"id": "side_2", "position": [8, 36, 34], "target": [8, 8, 14], "fov": 38, "time": 0.4, "back_on_take": false, "back_zone": 0, "hint": false},
+      {"id": "side_3", "position": [-18, 36, 8], "target": [2, 8, 8], "fov": 38, "time": 0.4, "back_on_take": false, "back_zone": 0, "hint": false}
+    ]},
+  "work_plane": 9,
+  "idle_visible": true,
+  "clear_view": {"surface": "placing"},
+  "interface": {"inventory_panel": false, "hide_player": true},
+  "inventory_drawer": {"side": "bottom", "style": "minimal", "always_open": true, "compact": true, "background": "#00000000", "slot_color": "#8C1E140C", "carry_size": 3.2},
+  "placing": {
+    "group": "items",
+    "item_size": 3.3,
+    "scale_range": [0.4, 1.6],
+    "stack_shrink": 0.5,
+    "counts": "hover",
+    "surfaces": [
+      {"from": [3, -10], "to": [13, 1.5], "height": 9, "clearance": 4, "headroom": 10, "flat_rest": "lie"},
+      {"from": [3, -10], "to": [13, 1.5], "height": 3, "clearance": 4, "headroom": 10, "flat_rest": "lie"}
+    ],
+    "physics": {}
+  },
+  "nodes": [
+    {"id": "rest", "pos": [0, 0, 0], "pickable": false},
+    {"id": "turn", "pos": [8, 0, 8], "pickable": false, "children": [
+    {"id": "front", "pos": [0, 0, 0], "pickable": false, "hidden": true, "visual": {"model": "immersive_bakery:diegesis/cupboard_front", "lit_as_block": true}},
+    {"id": "tray", "pos": [0, 0, 0], "hidden": true, "takes_items": true, "collider": {"from": [-6, 8, -8.2], "to": [6, 13, -7]}, "visual": {"model": "immersive_bakery:diegesis/cupboard_tray", "lit_as_block": true}, "children": [{"id": "tray_floor", "pos": [0, 0, 0], "collider": {"from": [-5.5, 8.2, -7], "to": [5.5, 9, 5]}}]},
+    {"id": "tray_lower", "pos": [0, 0, 0], "hidden": true, "takes_items": true, "collider": {"from": [-6, 2, -8.2], "to": [6, 7, -7]}, "visual": {"model": "immersive_bakery:diegesis/cupboard_tray_lower", "lit_as_block": true}, "children": [{"id": "tray_lower_floor", "pos": [0, 0, 0], "collider": {"from": [-5.5, 2.2, -7], "to": [5.5, 3, 5]}}]}]}
+  ]
+}

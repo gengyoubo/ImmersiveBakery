@@ -37,6 +37,7 @@ import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
 import org.joml.Vector3f;
+import org.lwjgl.glfw.GLFW;
 
 /** Dough on the board, what it can become over it, and the rolling pin. */
 @Mod.EventBusSubscriber(modid = ImmersiveBakery.MOD_ID, bus = Mod.EventBusSubscriber.Bus.MOD, value = Dist.CLIENT)
@@ -97,6 +98,7 @@ public final class DoughClient implements StationBehavior {
     private static final float BOARD_FROM = 1.2F;
     private static final float PIN_SECONDS = 0.15F;
 
+    private final DrawerView drawers = new DrawerView("pull_or_board");
     private final Map<Item, Boolean> usable = new HashMap<>();
     private List<DoughCraftingRecipe> recipes = List.of();
     private ItemStack dough = ItemStack.EMPTY;
@@ -133,13 +135,45 @@ public final class DoughClient implements StationBehavior {
     @Override
     public void onOpen(StationView view) {
         usable.clear();
-        view.setInventoryFilter(stack -> usable.computeIfAbsent(stack.getItem(), item -> !DoughShaping.recipes(view.level(), stack).isEmpty()));
+        view.setInventoryFilter(stack -> drawers.isLooking() || usable.computeIfAbsent(stack.getItem(), item -> !DoughShaping.recipes(view.level(), stack).isEmpty()));
         hint = "";
+        // As in Bakeries, only the top is for shaping dough.
+        boolean top = DrawerView.isUsedFromAbove(view);
+        if (!top) {
+            hint = told().getString();
+        }
+        drawers.open(view, !top);
         refresh(view);
     }
 
     @Override
+    public boolean onInventoryShiftClick(StationView view, int slot, ItemStack stack) {
+        if (stack.isEmpty() || !drawers.isLooking()) {
+            return false;
+        }
+        drawers.store(view, slot, stack);
+        return true;
+    }
+
+    /** Up to the board, down to the drawers. */
+    @Override
+    public boolean onKey(StationView view, int keyCode, int scanCode, int modifiers) {
+        boolean up = keyCode == GLFW.GLFW_KEY_W || keyCode == GLFW.GLFW_KEY_UP;
+        if (!up && keyCode != GLFW.GLFW_KEY_S && keyCode != GLFW.GLFW_KEY_DOWN) {
+            return false;
+        }
+        drawers.look(view, !up);
+        return true;
+    }
+
+    @Override
+    public boolean holdsBlock(StationView view) {
+        return drawers.holdsBlock(view);
+    }
+
+    @Override
     public void onSceneReady(StationView view) {
+        drawers.sceneReady(view);
         pinPlaced = false;
         view.node("work").ifPresent(node -> node.setPainter((pose, buffers, light) -> {
             if (!cleared) {
@@ -172,6 +206,9 @@ public final class DoughClient implements StationBehavior {
 
     @Override
     public void onEvent(StationView view, SceneEvent event) {
+        if (drawers.clicked(view, event)) {
+            return;
+        }
         if (event instanceof SceneEvent.Click click && click.node() != null && click.node().startsWith(CHOICE)) {
             pick(view, click.node());
         } else if (event instanceof SceneEvent.Release release && "hand".equals(release.node())) {
@@ -187,7 +224,7 @@ public final class DoughClient implements StationBehavior {
     @Override
     public boolean onItemClick(StationView view, String node, ItemStack stack, int button, boolean shift) {
         if (!node.startsWith(CHOICE)) {
-            return false;
+            return drawers.pull(view, node);
         }
         pick(view, node);
         return true;
@@ -218,6 +255,7 @@ public final class DoughClient implements StationBehavior {
 
     @Override
     public void frame(StationView view, float deltaSeconds) {
+        drawers.frame(view, deltaSeconds);
         press(view, deltaSeconds);
         NodeView pin = view.node("pin").orElse(null);
         if (pin == null) {
@@ -637,14 +675,18 @@ public final class DoughClient implements StationBehavior {
     }
 
     private void tell(StationView view) {
-        String next = !cleared ? "take" : dough.isEmpty() ? "insert" : picked == null ? "pick" : isFlat() && !isRolledOut() ? "roll"
-                : shaped == null && pieces() > 1 ? "divide" : "shape";
-        Component told = Component.translatable(LANG + next, pieces());
+        Component told = told();
         view.node("pin").ifPresent(node -> node.setTooltip(told));
         view.node("hand").ifPresent(node -> node.setTooltip(told));
         if (view.isFocused() && !told.getString().equals(hint)) {
             hint = told.getString();
             view.showCaption(told, CAPTION_SECONDS);
         }
+    }
+
+    private Component told() {
+        String next = !cleared ? "take" : dough.isEmpty() ? "insert" : picked == null ? "pick" : isFlat() && !isRolledOut() ? "roll"
+                : shaped == null && pieces() > 1 ? "divide" : "shape";
+        return Component.translatable(LANG + next, pieces());
     }
 }

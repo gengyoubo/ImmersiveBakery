@@ -1,7 +1,5 @@
 package github.com.gengyoubo.immersivebakery.mixin;
 
-import com.pockyl.diegesis.api.state.ItemPose;
-import com.pockyl.diegesis.api.state.SlotRef;
 import com.pockyl.diegesis.api.state.StationHost;
 import com.pockyl.diegesis.api.state.StationState;
 import com.renyigesai.bakeries.block.bread_basket.BreadBasketBlock;
@@ -79,31 +77,15 @@ abstract class BreadBasketBlockEntityMixin extends RandomizableContainerBlockEnt
         for (int i = 0; i < items.size(); i++) {
             ItemStack stack = items.get(i);
             if (!ItemStack.matches(stack, immersiveBakery$shown.get(i))) {
-                if (stack.isEmpty()) {
-                    immersiveBakery$forgetPlace(i);
-                }
                 immersiveBakery$shown.set(i, stack.copy());
                 changed = true;
             }
         }
+        if (changed) {
+            BreadBasketStation.items(stationState()).forgetTaken(slot -> items.get(slot).isEmpty());
+        }
         if (changed && known) {
             level.sendBlockUpdated(worldPosition, getBlockState(), getBlockState(), Block.UPDATE_CLIENTS);
-        }
-    }
-
-    /** Of what a hopper took, and of what lay on it, which is set out anew. */
-    @Unique
-    private void immersiveBakery$forgetPlace(int slot) {
-        SlotRef ref = SlotRef.of(BreadBasketStation.BREADS, slot);
-        if (stationState().getPose(ref) == null) {
-            return;
-        }
-        stationState().setPose(ref, null);
-        for (int above = 0; above < BreadBasketStation.SLOT_COUNT; above++) {
-            ItemPose pose = stationState().getPose(SlotRef.of(BreadBasketStation.BREADS, above));
-            if (pose != null && pose.on() == slot) {
-                immersiveBakery$forgetPlace(above);
-            }
         }
     }
 

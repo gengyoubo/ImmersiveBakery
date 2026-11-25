@@ -6,12 +6,10 @@ import com.pockyl.diegesis.api.state.StationSchema;
 import com.pockyl.diegesis.api.station.StationType.Orientation;
 import com.renyigesai.bakeries.init.BakeriesBlocks;
 import github.com.gengyoubo.immersivebakery.ImmersiveBakery;
-import net.minecraft.core.BlockPos;
-import net.minecraft.core.Direction;
+import github.com.gengyoubo.immersivebakery.storage.Drawers;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.phys.BlockHitResult;
 
+/** A board that dough is shaped on, on a cupboard. */
 public final class DoughStation {
     public static final ResourceLocation ID = id("dough_crafting_table");
     public static final ResourceLocation EFFECT_SHAPED = id("dough_shaped");
@@ -23,7 +21,10 @@ public final class DoughStation {
     public static final String RECIPE = "recipe";
     /** The dough goes back into the inventory. */
     public static final String ACTION_TAKE = "take";
-    private static final double LOOK_REACH = 8;
+    public static final StationSchema SCHEMA = Drawers.addTo(StationSchema.builder()
+            .slots(DOUGH, 1, SlotRules.DEFAULT)
+            .slots(PRODUCTS, PRODUCT_SLOTS, SlotRules.DEFAULT.accepts(stack -> false)))
+            .build();
 
     private DoughStation() {
     }
@@ -32,20 +33,12 @@ public final class DoughStation {
         Diegesis.station(ID)
                 .block(BakeriesBlocks.DOUGH_CRAFTING_TABLE)
                 .orientation(Orientation.BLOCK_OPPOSITE)
-                .openWhen((player, pos, state) -> !player.isShiftKeyDown() && !usesStorage(player, pos))
+                .openWhen((player, pos, state) -> !player.isShiftKeyDown())
                 .exclusive()
-                .schema(StationSchema.builder()
-                        .slots(DOUGH, 1, SlotRules.DEFAULT)
-                        .slots(PRODUCTS, PRODUCT_SLOTS, SlotRules.DEFAULT.accepts(stack -> false))
-                        .build())
+                .hidesBlock()
+                .schema(SCHEMA)
                 .logic(DoughLogic::new)
                 .register();
-    }
-
-    /** As in Bakeries, only the top is for shaping dough; the other sides open the storage. The client alone knows where it looks. */
-    private static boolean usesStorage(Player player, BlockPos pos) {
-        return player.level().isClientSide && player.pick(LOOK_REACH, 1, false) instanceof BlockHitResult hit
-                && hit.getBlockPos().equals(pos) && hit.getDirection() != Direction.UP;
     }
 
     private static ResourceLocation id(String path) {

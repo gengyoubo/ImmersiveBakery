@@ -2,7 +2,8 @@ package github.com.gengyoubo.immersivebakery.dough;
 
 import com.pockyl.diegesis.api.state.SlotRef;
 import com.pockyl.diegesis.api.station.StationContext;
-import com.pockyl.diegesis.api.station.StationLogic;
+import github.com.gengyoubo.immersivebakery.storage.DrawerLogic;
+import github.com.gengyoubo.immersivebakery.storage.Drawers;
 import java.util.Arrays;
 import java.util.List;
 import net.minecraft.nbt.CompoundTag;
@@ -13,25 +14,31 @@ import net.minecraft.stats.Stats;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 
-final class DoughLogic implements StationLogic {
+final class DoughLogic extends DrawerLogic {
     private static final SlotRef DOUGH = SlotRef.of(DoughStation.DOUGH, 0);
 
     DoughLogic(StationContext station) {
+        super(station);
     }
 
     @Override
     public void onOpen(StationContext station, Player player) {
+        super.onOpen(station, player);
         player.awardStat(Stats.INTERACT_WITH_LOOM);
     }
 
     /** The board takes dough once what was made on it is taken off. */
     @Override
     public boolean mayPlace(StationContext station, Player player, SlotRef slot, ItemStack stack) {
+        if (slot.group().equals(Drawers.ITEMS)) {
+            return super.mayPlace(station, player, slot, stack);
+        }
         return slot.group().equals(DoughStation.DOUGH) && isCleared(station) && !DoughShaping.recipes(station.level(), stack).isEmpty();
     }
 
     @Override
     public void onCustomAction(StationContext station, Player player, String action, CompoundTag data) {
+        super.onCustomAction(station, player, action, data);
         if (!isCleared(station)) {
             return;
         }
