@@ -83,6 +83,18 @@ public final class PeelRenderer extends BlockEntityWithoutLevelRenderer {
         pose.popPose();
     }
 
+    /** Draws the block of an item standing on the origin in its own size, smaller only when it would not fit. */
+    static void drawStanding(ItemStack stack, float mostWide, float mostHigh, PoseStack pose, MultiBufferSource buffers, int light, int overlay) {
+        BakedModel model = model(stack);
+        Bounds bounds = BOUNDS.computeIfAbsent(model, Bounds::of);
+        float scale = Math.min(1, Math.min(mostWide / Math.max(0.01F, bounds.width()), mostHigh / Math.max(0.01F, bounds.sizeY)));
+        pose.pushPose();
+        pose.scale(scale, scale, scale);
+        pose.translate(0.5F - bounds.middleX, 0.5F - bounds.bottom, 0.5F - bounds.middleZ);
+        Minecraft.getInstance().getItemRenderer().render(stack, ItemDisplayContext.NONE, false, pose, buffers, light, overlay, model);
+        pose.popPose();
+    }
+
     /** How much an item drawn so takes up: across, up and deep. */
     static Vector3f lyingSize(ItemStack stack, float size) {
         BakedModel model = model(stack);

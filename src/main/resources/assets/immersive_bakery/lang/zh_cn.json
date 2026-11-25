@@ -62,5 +62,10 @@
   "immersive_bakery.bread.turn_left": "左转（滚轮、← 或 A）",
   "immersive_bakery.bread.turn_right": "右转（滚轮、→ 或 D）",
   "immersive_bakery.bread.layers": "拿起刀，沿着侧面的切割线切成 %s 层 · A/D 转动视角",
-  "immersive_bakery.bread.cut": "拿起刀，沿着切割线切成 %s 片 · A/D 转动视角"
+  "immersive_bakery.bread.cut": "拿起刀，沿着切割线切成 %s 片 · A/D 转动视角",
+  "immersive_bakery.cake_box.untie": "按住丝带拉开",
+  "immersive_bakery.cake_box.open": "提起盖子",
+  "immersive_bakery.cake_box.put": "放入蛋糕",
+  "immersive_bakery.cake_box.take": "取出蛋糕",
+  "immersive_bakery.cake_box.close": "盖上盖子"
 }

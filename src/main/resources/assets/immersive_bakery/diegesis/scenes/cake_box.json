@@ -1,0 +1,14 @@
+{
+  "camera": {"position": [8, 33, -21], "target": [8, 6, 7], "fov": 38},
+  "work_plane": 6,
+  "idle_visible": false,
+  "interface": {"inventory_panel": false},
+  "inventory_drawer": {"side": "bottom", "style": "minimal", "always_open": true, "compact": true, "background": "#00000000", "slot_color": "#8C1E140C", "carry_size": 5},
+  "nodes": [
+    {"id": "box", "pos": [0, 0, 0], "pickable": false},
+    {"id": "ribbon", "pos": [8, 11, 8], "collider": {"from": [-6.1, -10.5, -6.1], "to": [6.1, 2, 6.1]}, "grabbable": {"hold": "drag", "grip": [0, 0, 0], "sway": 0, "plane": {"point": [8, 11, 8], "normal": [0, 0.7, -0.7], "bounds": {"from": [-4, 4, 1], "to": [20, 21, 18]}}}},
+    {"id": "lid", "pos": [8, 12, 8], "collider": {"from": [-6.1, -3, -6.1], "to": [6.1, 1.2, 6.1]}, "grabbable": {"hold": "drag", "grip": [0, 0, 0], "sway": 0, "plane": {"point": [8, 12, 8], "normal": [0, 0.7, -0.7], "bounds": {"from": [7, 12, 8], "to": [9, 20, 16]}}}},
+    {"id": "open_lid", "pos": [8, 9, 14], "collider": {"from": [-6, 0, 0.5], "to": [6, 13, 5]}},
+    {"id": "cake", "pos": [8, 0.5, 8], "collider": {"from": [-5.5, 0, -5.5], "to": [5.5, 7, 5.5]}, "slot": {"slot": "cake[0]", "display": "hidden", "size": 8, "counts": "never", "highlight": false, "idle_highlight": 0}}
+  ]
+}

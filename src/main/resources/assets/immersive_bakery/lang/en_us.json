@@ -62,5 +62,10 @@
   "immersive_bakery.bread.turn_left": "Turn left (wheel, Left or A)",
   "immersive_bakery.bread.turn_right": "Turn right (wheel, Right or D)",
   "immersive_bakery.bread.layers": "Take the knife and cut along the line on its side, into %s layers · A/D to turn",
-  "immersive_bakery.bread.cut": "Take the knife and cut along the lines, into %s slices · A/D to turn"
+  "immersive_bakery.bread.cut": "Take the knife and cut along the lines, into %s slices · A/D to turn",
+  "immersive_bakery.cake_box.untie": "Hold the ribbon and pull it off",
+  "immersive_bakery.cake_box.open": "Lift the lid",
+  "immersive_bakery.cake_box.put": "Put in a cake",
+  "immersive_bakery.cake_box.take": "Take out the cake",
+  "immersive_bakery.cake_box.close": "Close the lid"
 }

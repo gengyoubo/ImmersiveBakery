@@ -1,6 +1,7 @@
 package github.com.gengyoubo.immersivebakery;
 
 import github.com.gengyoubo.immersivebakery.blender.BlenderStation;
+import github.com.gengyoubo.immersivebakery.box.CakeBoxStation;
 import github.com.gengyoubo.immersivebakery.bread.BreadStation;
 import github.com.gengyoubo.immersivebakery.cup.CupStation;
 import github.com.gengyoubo.immersivebakery.dough.DoughStation;
@@ -29,5 +30,6 @@ public final class ImmersiveBakery {
         TankStation.register();
         CupStation.register();
         BreadStation.register();
+        CakeBoxStation.register();
     }
 }
