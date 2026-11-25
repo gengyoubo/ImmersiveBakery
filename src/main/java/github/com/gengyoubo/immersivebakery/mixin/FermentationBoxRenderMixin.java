@@ -6,6 +6,7 @@ import com.renyigesai.bakeries.block.fermentation_box.FermentationBoxBlockEntity
 import com.renyigesai.bakeries.client.model.FermentationBoxModel;
 import com.renyigesai.bakeries.client.render.block.FermentationBoxRender;
 import github.com.gengyoubo.immersivebakery.client.FermentationClient;
+import github.com.gengyoubo.immersivebakery.client.Ripening;
 import github.com.gengyoubo.immersivebakery.client.WorkBlockItemRenderer;
 import github.com.gengyoubo.immersivebakery.fermentation.FermentationStation;
 import net.minecraft.client.renderer.MultiBufferSource;
@@ -76,6 +77,42 @@ abstract class FermentationBoxRenderMixin {
     private float immersiveBakery$levelRackItems(float[] offsets, int slot) {
         // Bakeries staggers adjacent slots vertically. Use the rack's base height for each slot.
         return 0.0F;
+    }
+
+    @Shadow
+    private void renderModel(ItemStack stack, FermentationBoxBlockEntity box, PoseStack pose, MultiBufferSource buffers, int overlay, int seed) {
+        throw new AssertionError();
+    }
+
+    @Redirect(method = "renderItem", at = @At(value = "INVOKE", target = "Lcom/renyigesai/bakeries/client/render/block/FermentationBoxRender;renderModel("
+            + "Lnet/minecraft/world/item/ItemStack;Lcom/renyigesai/bakeries/block/fermentation_box/FermentationBoxBlockEntity;Lcom/mojang/blaze3d/vertex/PoseStack;"
+            + "Lnet/minecraft/client/renderer/MultiBufferSource;II)V"))
+    private void immersiveBakery$drawRaw(FermentationBoxRender renderer, ItemStack stack, FermentationBoxBlockEntity box, PoseStack pose, MultiBufferSource buffers,
+                                         int overlay, int seed) {
+        MultiBufferSource faded = buffers;
+        for (int slot = 0; slot < box.getContainerSize(); slot++) {
+            if (box.getItem(slot) == stack) {
+                faded = Ripening.inBox(box, slot).fadeRaw(buffers);
+            }
+        }
+        renderModel(stack, box, pose, faded, overlay, seed);
+    }
+
+    @Inject(method = "renderItem", at = @At("RETURN"))
+    private void immersiveBakery$drawRisen(FermentationBoxBlockEntity box, float partialTick, PoseStack pose, MultiBufferSource buffers,
+                                            int overlay, CallbackInfo ci) {
+        for (int slot = 0; slot < box.getContainerSize(); slot++) {
+            Ripening.Stage stage = Ripening.inBox(box, slot);
+            if (stage.isVisible()) {
+                pose.pushPose();
+                Ripening.bringCloser(pose);
+                // Same transform as FermentationBoxRender.renderItem.
+                pose.translate(FermentationBoxRender.VEC2S[slot].x, slot > 2 ? 0.28125F : 0.59375F, FermentationBoxRender.VEC2S[slot].y);
+                pose.scale(0.35F, 0.35F, 0.35F);
+                renderModel(stage.product(), box, pose, stage.fade(buffers), overlay, (int) box.getBlockPos().asLong());
+                pose.popPose();
+            }
+        }
     }
 
     @Inject(method = "renderModel", at = @At(value = "INVOKE", target = WorkBlockItemRenderer.IS_BLOCK_MODEL),

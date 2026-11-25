@@ -1,0 +1,29 @@
+{
+  "camera": {"position": [8, 27, -8], "target": [8, 3, 7], "fov": 32, "glances": [
+    {"id": "bread_1", "position": [-3.31, 27, -3.31], "target": [7.29, 3, 7.29], "fov": 32, "time": 0.35, "back_on_take": false, "back_zone": 0, "hint": false},
+    {"id": "bread_2", "position": [-8.0, 27, 8.0], "target": [7.0, 3, 8.0], "fov": 32, "time": 0.35, "back_on_take": false, "back_zone": 0, "hint": false},
+    {"id": "bread_3", "position": [-3.31, 27, 19.31], "target": [7.29, 3, 8.71], "fov": 32, "time": 0.35, "back_on_take": false, "back_zone": 0, "hint": false},
+    {"id": "bread_4", "position": [8.0, 27, 24.0], "target": [8.0, 3, 9.0], "fov": 32, "time": 0.35, "back_on_take": false, "back_zone": 0, "hint": false},
+    {"id": "bread_5", "position": [19.31, 27, 19.31], "target": [8.71, 3, 8.71], "fov": 32, "time": 0.35, "back_on_take": false, "back_zone": 0, "hint": false},
+    {"id": "bread_6", "position": [24.0, 27, 8.0], "target": [9.0, 3, 8.0], "fov": 32, "time": 0.35, "back_on_take": false, "back_zone": 0, "hint": false},
+    {"id": "bread_7", "position": [19.31, 27, -3.31], "target": [8.71, 3, 7.29], "fov": 32, "time": 0.35, "back_on_take": false, "back_zone": 0, "hint": false},
+    {"id": "cake_0", "position": [8.0, 46, -12.0], "target": [8.0, 5.5, 6.5], "fov": 25, "time": 0.35, "back_on_take": false, "back_zone": 0, "hint": false},
+    {"id": "cake_1", "position": [-6.14, 46, -6.14], "target": [6.94, 5.5, 6.94], "fov": 25, "time": 0.35, "back_on_take": false, "back_zone": 0, "hint": false},
+    {"id": "cake_2", "position": [-12.0, 46, 8.0], "target": [6.5, 5.5, 8.0], "fov": 25, "time": 0.35, "back_on_take": false, "back_zone": 0, "hint": false},
+    {"id": "cake_3", "position": [-6.14, 46, 22.14], "target": [6.94, 5.5, 9.06], "fov": 25, "time": 0.35, "back_on_take": false, "back_zone": 0, "hint": false},
+    {"id": "cake_4", "position": [8.0, 46, 28.0], "target": [8.0, 5.5, 9.5], "fov": 25, "time": 0.35, "back_on_take": false, "back_zone": 0, "hint": false},
+    {"id": "cake_5", "position": [22.14, 46, 22.14], "target": [9.06, 5.5, 9.06], "fov": 25, "time": 0.35, "back_on_take": false, "back_zone": 0, "hint": false},
+    {"id": "cake_6", "position": [28.0, 46, 8.0], "target": [9.5, 5.5, 8.0], "fov": 25, "time": 0.35, "back_on_take": false, "back_zone": 0, "hint": false},
+    {"id": "cake_7", "position": [22.14, 46, -6.14], "target": [9.06, 5.5, 6.94], "fov": 25, "time": 0.35, "back_on_take": false, "back_zone": 0, "hint": false}
+  ]},
+  "work_plane": 5,
+  "idle_visible": false,
+  "interface": {"inventory_panel": false},
+  "inventory_drawer": {"side": "bottom", "style": "minimal", "always_open": true, "compact": true, "background": "#00000000", "slot_color": "#8C1E140C", "carry_size": 3},
+  "nodes": [
+    {"id": "bread", "pos": [0, 0, 0], "pickable": false},
+    {"id": "knife", "pos": [8, 0.02, 1.5], "collider": {"from": [-5, 0, -1.4], "to": [5, 1, 1.4]}, "grabbable": {"grip": [0, 0, 0], "sway": 0, "plane": {"point": [8, 4.6, 8], "normal": [0, 1, 0], "bounds": {"from": [0, 4.6, 0], "to": [16, 4.6, 15]}}}},
+    {"id": "rest", "pos": [8, 0.02, 1.5], "slot": {"slot": "knife[0]", "display": "hidden", "size": 6, "idle_highlight": 0.3, "ghost": ["bakeries:bread_knife"]}},
+    {"id": "turner", "pos": [8, 0.1, 8], "pickable": false, "children": [{"id": "turn_left", "pos": [9.5, 0, -3], "collider": {"from": [-1.6, 0, -1.6], "to": [1.6, 0.6, 1.6]}}, {"id": "turn_right", "pos": [-9.5, 0, -3], "collider": {"from": [-1.6, 0, -1.6], "to": [1.6, 0.6, 1.6]}}]}
+  ]
+}

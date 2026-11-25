@@ -12,7 +12,11 @@ import github.com.gengyoubo.immersivebakery.ImmersiveBakery;
 import github.com.gengyoubo.immersivebakery.client.recipebook.RecipeBook;
 import github.com.gengyoubo.immersivebakery.tank.TankContents;
 import github.com.gengyoubo.immersivebakery.tank.TankStation;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.WeakHashMap;
 import javax.annotation.Nullable;
+import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
@@ -20,6 +24,7 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.Mth;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
+import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
@@ -33,6 +38,12 @@ public final class TankClient implements StationBehavior {
     private static final float CAPTION_SECONDS = 4;
     private static final float LID_PER_SECOND = 4;
     private static final AddedItems.Place MOUTH = new AddedItems.Place(4.8F, 5, -5, 3.4F, 3.5F, 18.6F, 5);
+
+    /** A tank ferments for some 70 seconds on average. */
+    private static final float FERMENTING_TICKS = 900;
+    private static final float FERMENTED_MOST = 0.92F;
+    /** Since when tanks were seen fermenting. */
+    private static final Map<Level, Map<BlockPos, Long>> FERMENTING = new WeakHashMap<>();
 
     private final RecipeBook book = new RecipeBook(new TankBook());
     private final AddedItems added = new AddedItems(MOUTH, TankClient::isVessel, vessel -> FoodColors.liquid(liquid(vessel)));
@@ -79,7 +90,11 @@ public final class TankClient implements StationBehavior {
         view.node(BOOK).ifPresent(node -> node.setPainter(book));
         view.node("jar").ifPresent(node -> node.setPainter((pose, buffers, light) -> {
             if (view.isBlockHidden()) {
-                TankPainter.draw(view, view.level().getBlockState(view.pos()), pose, buffers, lid * lid * (3 - 2 * lid));
+                BlockState tank = view.level().getBlockState(view.pos());
+                TankPainter.draw(view, tank, pose, buffers, lid * lid * (3 - 2 * lid));
+                if (TankContents.isFermenting(tank) && added.isEmpty()) {
+                    TankPainter.drawOver(view, TankContents.fermented(tank), pose, buffers, fermented(view));
+                }
             }
         }));
     }
@@ -89,6 +104,9 @@ public final class TankClient implements StationBehavior {
     public void tick(StationView view) {
         BlockState tank = view.level().getBlockState(view.pos());
         if (tank != shown) {
+            if (shown != null || !TankContents.isFermenting(tank)) {
+                FERMENTING.getOrDefault(view.level(), new HashMap<>()).remove(view.pos());
+            }
             shown = tank;
             refresh(view, tank);
         }
@@ -129,6 +147,15 @@ public final class TankClient implements StationBehavior {
         if (TankStation.EFFECT_ADDED.equals(effect)) {
             added.add(ItemStack.of(data.getCompound(TankStation.ITEM)));
         }
+    }
+
+    /**
+     * How far the tank looks fermented. Nothing knows how far it is, as it all happens at once at a random moment; so it looks the
+     * further the longer it has been seen fermenting.
+     */
+    private static float fermented(StationView view) {
+        long since = FERMENTING.computeIfAbsent(view.level(), level -> new HashMap<>()).computeIfAbsent(view.pos(), pos -> view.level().getGameTime());
+        return FERMENTED_MOST * (1 - (float) Math.exp(-(view.level().getGameTime() - since) / FERMENTING_TICKS));
     }
 
     private static ItemStack liquid(ItemStack vessel) {

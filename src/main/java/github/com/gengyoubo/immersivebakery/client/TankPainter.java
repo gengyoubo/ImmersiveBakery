@@ -19,6 +19,7 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraftforge.client.model.BakedModelWrapper;
 import net.minecraftforge.client.model.IQuadTransformer;
 import net.minecraftforge.client.model.data.ModelData;
+import org.joml.Vector3f;
 
 /** A tank's own block model, lit as the block, with its lid drawn apart. */
 final class TankPainter {
@@ -47,6 +48,16 @@ final class TankPainter {
         pose.mulPose(Axis.XP.rotationDegrees(OPEN_ANGLE * open));
         pose.translate(0, -HINGE_Y, -HINGE_Z);
         draw(view, tank, parts.lid, pose, buffers);
+        pose.popPose();
+    }
+
+    /** What else is in the tank, as see-through as {@code alpha} says. */
+    static void drawOver(StationView view, BlockState into, PoseStack pose, MultiBufferSource buffers, float alpha) {
+        BakedModel model = Minecraft.getInstance().getBlockRenderer().getBlockModel(into);
+        pose.pushPose();
+        Ripening.bringCloser(pose);
+        draw(view, into, PARTS.computeIfAbsent(model, whole -> new Parts(new Part(whole, false), new Part(whole, true))).jar, pose,
+                Faded.shaded(buffers, alpha, pose.last().normal().transform(new Vector3f(0, 1, 0))));
         pose.popPose();
     }
 

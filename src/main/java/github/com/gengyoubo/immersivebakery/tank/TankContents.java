@@ -104,6 +104,11 @@ public final class TankContents {
                 : isMilk(tank) && tank.getValue(MilkTankBlock.SALT);
     }
 
+    /** What a fermenting tank becomes. */
+    public static BlockState fermented(BlockState tank) {
+        return (isMilk(tank) ? BakeriesBlocks.CHEESE_TANK : BakeriesBlocks.YEAST_TANK).get().defaultBlockState();
+    }
+
     public static int flour(BlockState tank) {
         return tank.getValue(FermentationTankBlock.FLOUR);
     }
