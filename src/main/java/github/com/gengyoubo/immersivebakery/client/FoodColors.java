@@ -7,11 +7,15 @@ import java.util.Map;
 import java.util.Set;
 import java.util.stream.IntStream;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.renderer.block.model.BakedQuad;
+import net.minecraft.client.renderer.texture.MissingTextureAtlasSprite;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.client.resources.model.BakedModel;
 import net.minecraft.world.item.Item;
+import net.minecraft.util.RandomSource;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
+import net.minecraftforge.client.model.data.ModelData;
 
 /** The colours of liquids and batters, read from the icons of what they come in without its glass or metal. */
 final class FoodColors {
@@ -76,7 +80,13 @@ final class FoodColors {
     }
 
     private static TextureAtlasSprite sprite(ItemStack stack) {
-        return Minecraft.getInstance().getItemRenderer().getModel(stack, null, null, 0).getParticleIcon();
+        BakedModel model = Minecraft.getInstance().getItemRenderer().getModel(stack, null, null, 0);
+        TextureAtlasSprite sprite = model.getParticleIcon();
+        if (sprite.contents().name().equals(MissingTextureAtlasSprite.getLocation())) {
+            // Some models name none.
+            return model.getQuads(null, null, RandomSource.create(0), ModelData.EMPTY, null).stream().findFirst().map(BakedQuad::getSprite).orElse(sprite);
+        }
+        return sprite;
     }
 
     private static IntStream pixels(TextureAtlasSprite sprite) {

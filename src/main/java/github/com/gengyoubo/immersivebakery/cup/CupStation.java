@@ -1,6 +1,9 @@
 package github.com.gengyoubo.immersivebakery.cup;
 
 import com.pockyl.diegesis.api.Diegesis;
+import com.pockyl.diegesis.api.state.ControlSpec;
+import com.pockyl.diegesis.api.state.StationSchema;
+import com.pockyl.diegesis.api.state.StationState;
 import com.pockyl.diegesis.api.station.StationType.Orientation;
 import com.renyigesai.bakeries.init.BakeriesBlocks;
 import github.com.gengyoubo.immersivebakery.ImmersiveBakery;
@@ -22,6 +25,17 @@ public final class CupStation {
     /** The cup was shaken until all in it was mixed. */
     public static final String ACTION_SHAKEN = "shaken";
 
+    /** The finished drink's own cup is full. */
+    public static final String ACTION_POURED = "poured";
+    /** What belongs on the drink fell into it, the straw last. */
+    public static final String ACTION_DONE = "done";
+    /** How far the drink is. */
+    public static final String STAGE = "stage";
+    public static final int MIXING = 0;
+    public static final int SHAKEN = 1;
+    public static final int POURED = 2;
+    public static final int DONE = 3;
+
     private CupStation() {
     }
 
@@ -32,6 +46,7 @@ public final class CupStation {
                 .openWhen((player, pos, state) -> !usesItem(player))
                 .exclusive()
                 .hidesBlock()
+                .schema(StationSchema.builder().control(STAGE, ControlSpec.stepped(MIXING, DONE, DONE, MIXING).locked()).build())
                 .logic(CupLogic::new)
                 .register();
     }
@@ -39,6 +54,10 @@ public final class CupStation {
     /** Sneaking with something in the hand never reaches the cup. With an empty hand Bakeries would hand out a drink nobody shook. */
     private static boolean usesItem(Player player) {
         return player.isShiftKeyDown() && !(player.getMainHandItem().isEmpty() && player.getOffhandItem().isEmpty());
+    }
+
+    public static int stage(StationState state) {
+        return Math.round(state.getControl(STAGE));
     }
 
     private static ResourceLocation id(String path) {

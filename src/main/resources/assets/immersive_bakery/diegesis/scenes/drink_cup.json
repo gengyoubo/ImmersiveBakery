@@ -7,6 +7,9 @@
   "nodes": [
     {"id": "cup", "pos": [8, 0, 8], "collider": {"from": [-2.4, 0, -2.4], "to": [2.4, 9.6, 2.4]}, "grabbable": {"hold": "drag", "grip": [0, 5, 0], "sway": 0.5, "plane": {"point": [8, 5, 8], "normal": [0, 0, -1], "bounds": {"from": [6.5, 5, 8], "to": [9.5, 14, 8]}}}},
     {"id": "glass", "pos": [8, 0, 8], "collider": {"from": [-2.1, 0, -2.1], "to": [2.1, 9.4, 2.1]}, "takes_items": true},
+    {"id": "pourer", "pos": [1.8, 0, 8], "collider": {"from": [-2.4, 0, -2.4], "to": [2.4, 9.6, 2.4]}, "grabbable": {"hold": "drag", "grip": [0, 5, 0], "sway": 0.3, "plane": {"point": [8, 5, 8], "normal": [0, 0, -1], "bounds": {"from": [0, 5, 8], "to": [8, 14, 8]}}}},
+    {"id": "product", "pos": [8, 0, 8], "pickable": false},
+    {"id": "pour_stream", "pos": [7.85, 0, 8], "pickable": false},
     {"id": "added", "pos": [8, 9.5, 8], "hidden": true, "pickable": false},
     {"id": "stream", "pos": [8.8, 0, 8], "pickable": false},
     {"id": "book_open", "pos": [16.6, 10.5, 1], "rotation": [-64, 0, 0], "scale": 0.72, "hidden": true, "collider": {"from": [-5.3, -0.4, -3.9], "to": [5.3, 1.4, 3.9]}}

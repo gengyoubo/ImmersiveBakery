@@ -57,6 +57,8 @@
   "immersive_bakery.drink_cup.empty": "放入冰和其他材料，先后都可以",
   "immersive_bakery.drink_cup.more": "还差材料",
   "immersive_bakery.drink_cup.shake": "%s：按住杯子上下摇晃",
+  "immersive_bakery.drink_cup.pour": "%s：拿起摇杯，倒进成品杯",
+  "immersive_bakery.drink_cup.serve": "%s：马上就好",
   "immersive_bakery.flour_sieve.title": "面粉筛",
   "immersive_bakery.flour_sieve.shake": "按住筛子，左右来回摇晃 · 点一下取回",
   "immersive_bakery.flour_sieve.put": "把要过筛的东西放到筛子上",

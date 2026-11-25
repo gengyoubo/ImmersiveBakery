@@ -57,6 +57,8 @@
   "immersive_bakery.drink_cup.empty": "Put in ice and what else the drink needs, in any order",
   "immersive_bakery.drink_cup.more": "Something is still missing",
   "immersive_bakery.drink_cup.shake": "%s: hold the cup and shake it up and down",
+  "immersive_bakery.drink_cup.pour": "%s: take the cup and pour it into the glass it is served in",
+  "immersive_bakery.drink_cup.serve": "%s: nearly done",
   "immersive_bakery.flour_sieve.title": "Flour Sieve",
   "immersive_bakery.flour_sieve.shake": "Hold the sieve and shake it left and right · Click to take it back",
   "immersive_bakery.flour_sieve.put": "Put something onto the sieve",
