@@ -38,18 +38,20 @@ public final class DoughShaping {
         return product.isItemEnabled(level.enabledFeatures()) ? product : ItemStack.EMPTY;
     }
 
-    /** Takes as many pieces of the dough as the products of fit in that many slots, and gives those products. */
+    /** Makes of one piece of the dough what that gives, in stacks; nothing when it does not fit in that many slots. */
     public static List<ItemStack> shape(Level level, ItemStack dough, DoughCraftingRecipe recipe, int slots) {
         ItemStack product = product(level, dough, recipe);
         if (product.isEmpty()) {
             return List.of();
         }
-        int pieces = Math.min(dough.getCount(), slots * product.getMaxStackSize() / product.getCount());
         List<ItemStack> products = new ArrayList<>();
-        for (int left = pieces * product.getCount(); left > 0; left -= product.getMaxStackSize()) {
+        for (int left = product.getCount(); left > 0; left -= product.getMaxStackSize()) {
             products.add(product.copyWithCount(Math.min(left, product.getMaxStackSize())));
         }
-        dough.shrink(pieces);
+        if (products.size() > slots) {
+            return List.of();
+        }
+        dough.shrink(1);
         return products;
     }
 }

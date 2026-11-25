@@ -23,8 +23,6 @@ public final class DoughStation {
     public static final String RECIPE = "recipe";
     /** The dough goes back into the inventory. */
     public static final String ACTION_TAKE = "take";
-    /** How much dough is worked at once. */
-    public static final int MOST_DOUGH = 16;
     private static final double LOOK_REACH = 8;
 
     private DoughStation() {
@@ -37,7 +35,7 @@ public final class DoughStation {
                 .openWhen((player, pos, state) -> !player.isShiftKeyDown() && !usesStorage(player, pos))
                 .exclusive()
                 .schema(StationSchema.builder()
-                        .slots(DOUGH, 1, SlotRules.DEFAULT.maxStack(MOST_DOUGH))
+                        .slots(DOUGH, 1, SlotRules.DEFAULT)
                         .slots(PRODUCTS, PRODUCT_SLOTS, SlotRules.DEFAULT.accepts(stack -> false))
                         .build())
                 .logic(DoughLogic::new)

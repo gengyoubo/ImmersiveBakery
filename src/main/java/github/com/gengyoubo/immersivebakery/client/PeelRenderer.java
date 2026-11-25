@@ -16,6 +16,7 @@ import net.minecraft.world.item.ItemDisplayContext;
 import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.client.extensions.common.IClientItemExtensions;
 import net.minecraftforge.client.model.data.ModelData;
+import org.joml.Vector3f;
 
 /** Draws a peel with what lies on its blade. */
 public final class PeelRenderer extends BlockEntityWithoutLevelRenderer {
@@ -67,13 +68,9 @@ public final class PeelRenderer extends BlockEntityWithoutLevelRenderer {
         }
         var minecraft = Minecraft.getInstance();
         var renderer = minecraft.getItemRenderer();
-        // Bakeries' kiln shows the block of a pizza, not its flat icon.
-        BakedModel model = stack.getItem() instanceof BlockItem item
-                ? minecraft.getBlockRenderer().getBlockModel(item.getBlock().defaultBlockState())
-                : renderer.getModel(stack, minecraft.level, null, 0);
+        BakedModel model = model(stack);
         Bounds bounds = BOUNDS.computeIfAbsent(model, Bounds::of);
-        float scale = Math.min(KILN_SCALE * model.getTransforms().getTransform(ItemDisplayContext.FIXED).scale.x(),
-                size / Math.max(0.01F, bounds.width()));
+        float scale = scale(model, bounds, size);
         pose.pushPose();
         pose.scale(scale, scale, scale);
         if (model.isGui3d()) {
@@ -86,8 +83,33 @@ public final class PeelRenderer extends BlockEntityWithoutLevelRenderer {
         pose.popPose();
     }
 
+    /** How much an item drawn so takes up: across, up and deep. */
+    static Vector3f lyingSize(ItemStack stack, float size) {
+        BakedModel model = model(stack);
+        Bounds bounds = BOUNDS.computeIfAbsent(model, Bounds::of);
+        float scale = scale(model, bounds, size);
+        return model.isGui3d() ? new Vector3f(bounds.sizeX, bounds.sizeY, bounds.sizeZ).mul(scale)
+                : new Vector3f(bounds.sizeX, bounds.sizeZ, bounds.sizeY).mul(scale);
+    }
+
+    private static float scale(BakedModel model, Bounds bounds, float size) {
+        return Math.min(KILN_SCALE * model.getTransforms().getTransform(ItemDisplayContext.FIXED).scale.x(), size / Math.max(0.01F, bounds.width()));
+    }
+
+    /** Bakeries' kiln shows the block of a pizza, not its flat icon. */
+    private static BakedModel model(ItemStack stack) {
+        var minecraft = Minecraft.getInstance();
+        return stack.getItem() instanceof BlockItem item
+                ? minecraft.getBlockRenderer().getBlockModel(item.getBlock().defaultBlockState())
+                : minecraft.getItemRenderer().getModel(stack, minecraft.level, null, 0);
+    }
+
     /** What a model takes up, blocks. */
-    private record Bounds(float middleX, float bottom, float middleZ, float width) {
+    private record Bounds(float middleX, float bottom, float middleZ, float sizeX, float sizeY, float sizeZ) {
+        float width() {
+            return Math.max(sizeX, sizeZ);
+        }
+
         static Bounds of(BakedModel model) {
             float[] low = {Float.MAX_VALUE, Float.MAX_VALUE, Float.MAX_VALUE};
             float[] high = {-Float.MAX_VALUE, -Float.MAX_VALUE, -Float.MAX_VALUE};
@@ -105,8 +127,8 @@ public final class PeelRenderer extends BlockEntityWithoutLevelRenderer {
                     }
                 }
             }
-            return high[0] < low[0] ? new Bounds(0.5F, 0, 0.5F, 1)
-                    : new Bounds((low[0] + high[0]) / 2, low[1], (low[2] + high[2]) / 2, Math.max(high[0] - low[0], high[2] - low[2]));
+            return high[0] < low[0] ? new Bounds(0.5F, 0, 0.5F, 1, 1, 1)
+                    : new Bounds((low[0] + high[0]) / 2, low[1], (low[2] + high[2]) / 2, high[0] - low[0], high[1] - low[1], high[2] - low[2]);
         }
     }
 }

@@ -27,6 +27,7 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.sounds.SoundEvents;
+import net.minecraft.util.FastColor;
 import net.minecraft.util.Mth;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemDisplayContext;
@@ -57,23 +58,33 @@ public final class DoughClient implements StationBehavior {
     /** How far the pin rolls over the dough until it is a flat sheet, and between two sounds. */
     private static final float ROLLED_OUT = 36;
     private static final float ROLL_SOUND = 7;
-    /** How long the dough is pressed to shape one piece, and all of them. */
-    private static final float PRESS_PER_PIECE = 0.3F;
-    private static final float PRESS_LEAST = 0.9F;
-    private static final float PRESS_MOST = 2.4F;
-    /** How long it was pressed when it is divided. */
-    private static final float DIVIDED = 0.35F;
+    /** How long the dough is pressed until it is divided, and each piece until it has its shape. */
+    private static final float DIVIDE_SECONDS = 0.8F;
+    private static final float SHAPE_SECONDS = 0.7F;
+    /** Dough let go of before it is divided comes together again, this much faster. */
+    private static final float TOGETHER = 3;
+    /** A press beside the dough by no more than this is meant for it, pixels. */
+    private static final float PRESS_MARGIN = 0.6F;
     /** A shorter press is a click, which takes the dough away. */
     private static final float CLICK = 0.2F;
     private static final float PRESS_SOUND = 0.3F;
     /** Faster than this, per frame, does not count. */
     private static final float FASTEST = 4;
     private static final float ANSWER_SECONDS = 1;
-    /** What lies on the board is shown piece by piece, up to so many. */
-    private static final int MOST_PIECES = 9;
+    /** As many pieces as one dough gives products, up to so many; of several stacks of products fewer each are shown. */
+    private static final int MOST_PIECES = 24;
+    private static final int MOST_OF_SEVERAL = 9;
     private static final float PIECES_WIDE = 11;
     private static final float PIECES_DEEP = 9.6F;
     private static final float MOST_PIECE = 6;
+    /** While a piece is shaped: until when it takes on the product's size and colour, the product shows over it, the dough is left. */
+    private static final float ALIKE = 0.5F;
+    private static final float PRODUCT_FROM = 0.4F;
+    private static final float PRODUCT_WHOLE = 0.8F;
+    /** The dough ends a little smaller than the product, and shrinks to this in it. */
+    private static final float WITHIN = 0.94F;
+    private static final float LEFT = 0.5F;
+    private static final float LEAST_HEIGHT = 0.35F;
     private static final float PIECE_GAP = 0.88F;
     private static final float MIDDLE_Z = 8;
     /** The pin: where the scene puts and carries it, how it lies on the board in Bakeries' model, and where it lies on the table. */
@@ -96,8 +107,13 @@ public final class DoughClient implements StationBehavior {
     private int firstRow;
     private boolean cleared = true;
     private float rolled;
-    private float pressed;
+    private float dividing;
     private float pressedNow;
+    /** How far each piece of the divided dough is shaped, 0 to 1; null while the dough is whole. */
+    @Nullable
+    private float[] shaped;
+    /** The press that divided the dough goes on: it does not shape yet. */
+    private boolean letGoFirst;
     private float sinceSound;
     private float waiting;
     private float lastZ = Float.NaN;
@@ -159,10 +175,11 @@ public final class DoughClient implements StationBehavior {
         if (event instanceof SceneEvent.Click click && click.node() != null && click.node().startsWith(CHOICE)) {
             pick(view, click.node());
         } else if (event instanceof SceneEvent.Release release && "hand".equals(release.node())) {
-            if (pressedNow < CLICK && pressed == 0 && mayPress()) {
+            if (pressedNow < CLICK && shaped == null && dividing == 0 && mayPress()) {
                 view.sendAction(DoughStation.ACTION_TAKE, new CompoundTag());
             }
             pressedNow = 0;
+            letGoFirst = false;
             refresh(view);
         }
     }
@@ -191,7 +208,7 @@ public final class DoughClient implements StationBehavior {
     public void tick(StationView view) {
         if (waiting > 0 && (waiting -= 0.05F) <= 0) {
             // The server made nothing of it.
-            pressed = 0;
+            unite();
         }
         if (view.isInUse() != wasInUse) {
             wasInUse = view.isInUse();
@@ -210,7 +227,7 @@ public final class DoughClient implements StationBehavior {
         boolean held = pin.isHeld();
         Vector3f at = pin.scenePosition();
         boolean over = inUse && held && !dough.isEmpty() && cleared && Math.abs(at.z - MIDDLE_Z) < DoughPainter.radius(flatness()) + PIN_RADIUS
-                && pressed == 0;
+                && dividing == 0 && shaped == null;
         if (held) {
             if (!Float.isNaN(lastZ)) {
                 float way = at.z - lastZ;
@@ -258,32 +275,71 @@ public final class DoughClient implements StationBehavior {
         }
     }
 
-    /** The dough is pressed and held: it is divided, and one piece after the other gets its shape. */
+    /** Held down, the dough is divided; after that each piece is shaped the same way. */
     private void press(StationView view, float deltaSeconds) {
         NodeView hand = view.node("hand").orElse(null);
-        if (hand == null || !hand.isHeld() || !mayPress()) {
+        boolean held = hand != null && hand.isHeld() && mayPress();
+        Vector3f at = held ? view.pointerOn("work", DoughPainter.height(flatness()) / 2).orElse(null) : null;
+        if (!held && dividing > 0) {
+            dividing = Math.max(0, dividing - TOGETHER * deltaSeconds);
+        }
+        if (at == null || letGoFirst) {
             return;
         }
-        int before = shapedPieces();
-        pressedNow += deltaSeconds;
-        if (pressedNow < CLICK) {
+        if (shaped == null) {
+            if (Math.hypot(at.x, at.z) > DoughPainter.radius(flatness()) + PRESS_MARGIN) {
+                return;
+            }
+            pressedNow += deltaSeconds;
+            if (pressedNow < CLICK) {
+                return;
+            }
+            if (pieces() > 1) {
+                pressSound(view, deltaSeconds);
+                dividing = Math.min(DIVIDE_SECONDS, dividing + deltaSeconds);
+                if (dividing < DIVIDE_SECONDS) {
+                    return;
+                }
+                view.playSound(SoundEvents.SLIME_BLOCK_PLACE, "work", 0.5F, 1);
+                letGoFirst = true;
+            }
+            shaped = new float[pieces()];
+            tell(view);
             return;
         }
-        pressed = Math.min(pressLength(), pressed + deltaSeconds);
+        Grid grid = new Grid(shaped.length, PIECES_WIDE);
+        int piece = grid.at(at.x, at.z);
+        if (piece < 0 || shaped[piece] >= 1) {
+            return;
+        }
+        pressSound(view, deltaSeconds);
+        shaped[piece] = Math.min(1, shaped[piece] + deltaSeconds / SHAPE_SECONDS);
+        if (shaped[piece] < 1) {
+            return;
+        }
+        view.playSound(SoundEvents.SLIME_BLOCK_PLACE, "work", 0.3F, 1.5F);
+        for (float one : shaped) {
+            if (one < 1) {
+                return;
+            }
+        }
+        waiting = ANSWER_SECONDS;
+        CompoundTag data = new CompoundTag();
+        data.putString(DoughStation.RECIPE, picked.toString());
+        view.sendAction(DoughStation.ACTION_SHAPE, data);
+    }
+
+    private void pressSound(StationView view, float deltaSeconds) {
         sinceSound += deltaSeconds;
         if (sinceSound > PRESS_SOUND) {
             sinceSound = 0;
             view.playSound(SoundEvents.SLIME_BLOCK_STEP, "work", 0.35F, 1.1F);
         }
-        if (shapedPieces() > before) {
-            view.playSound(SoundEvents.SLIME_BLOCK_PLACE, "work", 0.3F, 1.5F);
-        }
-        if (pressed >= pressLength()) {
-            waiting = ANSWER_SECONDS;
-            CompoundTag data = new CompoundTag();
-            data.putString(DoughStation.RECIPE, picked.toString());
-            view.sendAction(DoughStation.ACTION_SHAPE, data);
-        }
+    }
+
+    private void unite() {
+        dividing = 0;
+        shaped = null;
     }
 
     private void sound(StationView view, float way, float pitch) {
@@ -312,15 +368,7 @@ public final class DoughClient implements StationBehavior {
     }
 
     private int pieces() {
-        return Math.min(MOST_PIECES, Math.max(1, dough.getCount() * product.getCount()));
-    }
-
-    private float pressLength() {
-        return Mth.clamp(pieces() * PRESS_PER_PIECE, PRESS_LEAST, PRESS_MOST);
-    }
-
-    private int shapedPieces() {
-        return (int) (pieces() * Mth.clamp((pressed - DIVIDED) / (pressLength() - DIVIDED), 0, 1));
+        return Math.min(MOST_PIECES, Math.max(1, product.getCount()));
     }
 
     private void pick(StationView view, String node) {
@@ -328,7 +376,7 @@ public final class DoughClient implements StationBehavior {
         if (recipe != null && waiting <= 0) {
             if (!recipe.getId().equals(picked)) {
                 // Divided otherwise.
-                pressed = 0;
+                unite();
             }
             picked = recipe.getId();
             view.playSound(SoundEvents.UI_STONECUTTER_SELECT_RECIPE, "work", 0.6F, 1);
@@ -344,24 +392,56 @@ public final class DoughClient implements StationBehavior {
 
     private void drawDough(PoseStack pose, MultiBufferSource buffers, int light) {
         int color = FoodColors.batter(dough, ItemStack.EMPTY);
-        if (pressed <= 0) {
+        if (dividing <= 0 && shaped == null) {
             DoughPainter.draw(pose, buffers, light, color, flatness(), 1);
             return;
         }
-        Grid grid = new Grid(pieces(), PIECES_WIDE);
-        float divided = Mth.clamp(pressed / DIVIDED, 0, 1);
-        int shaped = shapedPieces();
+        int pieces = shaped == null ? pieces() : shaped.length;
+        Grid grid = new Grid(pieces, PIECES_WIDE);
+        float divided = shaped != null ? 1 : dividing / DIVIDE_SECONDS;
         float portion = Math.min(1, grid.size / 2 / DoughPainter.radius(flatness()));
         float size = Mth.lerp(Math.min(1, 2 * divided), 1, portion);
-        for (int i = 0; i < pieces(); i++) {
+        for (int i = 0; i < pieces; i++) {
+            float done = shaped == null ? 0 : shaped[i];
             pose.pushPose();
             pose.translate(grid.x(i) * divided, 0, grid.z(i) * divided);
-            if (i < shaped) {
+            if (done >= 1) {
                 drawPiece(product, grid.size, pose, buffers, light);
             } else {
-                pose.scale(1, Mth.lerp(flatness(), size, 1), 1);
-                DoughPainter.draw(pose, buffers, light, color, flatness(), size);
+                drawShaping(pose, buffers, light, color, size, grid.size, done);
             }
+            pose.popPose();
+        }
+    }
+
+    private void drawShaping(PoseStack pose, MultiBufferSource buffers, int light, int color, float portion, float room, float done) {
+        float low = Mth.lerp(flatness(), portion, 1);
+        if (done <= 0) {
+            pose.scale(1, low, 1);
+            DoughPainter.draw(pose, buffers, light, color, flatness(), portion);
+            return;
+        }
+        float into = Mth.clamp(done / ALIKE, 0, 1);
+        float alike = into * into * (3 - 2 * into);
+        float shows = Mth.clamp((done - PRODUCT_FROM) / (PRODUCT_WHOLE - PRODUCT_FROM), 0, 1);
+        float left = Mth.lerp(Mth.clamp((done - PRODUCT_WHOLE) / (1 - PRODUCT_WHOLE), 0, 1), 1, LEFT);
+        Vector3f size = PeelRenderer.lyingSize(product, room * PIECE_GAP / 16).mul(16 * WITHIN);
+        float across = 2 * DoughPainter.radius(flatness()) * portion;
+        float high = DoughPainter.height(flatness());
+        // An icon, which is flat, lies on the dough until that has gone under it.
+        boolean icon = size.y < LEAST_HEIGHT;
+        float gone = icon ? (left - LEFT) / (1 - LEFT) : left;
+        float height = Mth.lerp(alike, low * high, Math.max(size.y, LEAST_HEIGHT)) * gone;
+        if (shows > 0) {
+            pose.pushPose();
+            pose.translate(0, icon ? height : 0, 0);
+            drawPiece(product, room, pose, shows < 1 ? Faded.of(buffers, shows) : buffers, light);
+            pose.popPose();
+        }
+        if (height > 0.01F) {
+            pose.pushPose();
+            pose.scale(Mth.lerp(alike, 1, size.x / across) * left, height / high, Mth.lerp(alike, 1, size.z / across) * left);
+            DoughPainter.draw(pose, buffers, light, FastColor.ARGB32.lerp(alike, color, FoodColors.batter(product, ItemStack.EMPTY)), flatness(), portion);
             pose.popPose();
         }
     }
@@ -374,7 +454,7 @@ public final class DoughClient implements StationBehavior {
             if (stack.isEmpty()) {
                 continue;
             }
-            Grid grid = new Grid(Math.min(MOST_PIECES, stack.getCount()), PIECES_WIDE / stacks);
+            Grid grid = new Grid(Math.min(stacks == 1 ? MOST_PIECES : MOST_OF_SEVERAL, stack.getCount()), PIECES_WIDE / stacks);
             for (int i = 0; i < grid.pieces; i++) {
                 pose.pushPose();
                 pose.translate(stackX(place, stacks) + grid.x(i), 0, grid.z(i));
@@ -435,6 +515,16 @@ public final class DoughClient implements StationBehavior {
             return ((inRow - 1) / 2.0F - piece % columns) * size;
         }
 
+        /** The piece at a place, -1 for none. */
+        private int at(float x, float z) {
+            for (int piece = 0; piece < pieces; piece++) {
+                if (Math.abs(x - x(piece)) < size / 2 && Math.abs(z - z(piece)) < size / 2) {
+                    return piece;
+                }
+            }
+            return -1;
+        }
+
         /** The first row is the farthest. */
         private float z(int piece) {
             return ((rows - 1) / 2.0F - piece / columns) * size;
@@ -488,12 +578,8 @@ public final class DoughClient implements StationBehavior {
         cleared = made == 0;
         if (!ItemStack.isSameItemSameTags(now, dough) || wasCleared && !cleared) {
             rolled = 0;
-            pressed = 0;
+            unite();
             waiting = 0;
-        } else if (now.getCount() != dough.getCount()) {
-            // What was added is not rolled yet; what was divided lies there whole again.
-            rolled *= (float) Math.min(now.getCount(), dough.getCount()) / now.getCount();
-            pressed = 0;
         }
         if (!now.is(dough.getItem())) {
             recipes = DoughShaping.recipes(view.level(), now);
@@ -526,12 +612,6 @@ public final class DoughClient implements StationBehavior {
         }
         layOutChoices(view);
         tell(view);
-        var player = Minecraft.getInstance().player;
-        if (view.isFocused() && player != null && dough.getCount() >= DoughStation.MOST_DOUGH
-                && ItemStack.isSameItemSameTags(player.inventoryMenu.getCarried(), dough)) {
-            // What the board does not take would be in the way of the pin.
-            view.putAwayCarried();
-        }
     }
 
     private void layOutChoices(StationView view) {
@@ -557,12 +637,14 @@ public final class DoughClient implements StationBehavior {
     }
 
     private void tell(StationView view) {
-        String next = !cleared ? "take" : dough.isEmpty() ? "insert" : picked == null ? "pick" : isFlat() && !isRolledOut() ? "roll" : "shape";
-        view.node("pin").ifPresent(node -> node.setTooltip(Component.translatable(LANG + next)));
-        view.node("hand").ifPresent(node -> node.setTooltip(Component.translatable(LANG + next)));
-        if (view.isFocused() && !next.equals(hint)) {
-            hint = next;
-            view.showCaption(Component.translatable(LANG + next), CAPTION_SECONDS);
+        String next = !cleared ? "take" : dough.isEmpty() ? "insert" : picked == null ? "pick" : isFlat() && !isRolledOut() ? "roll"
+                : shaped == null && pieces() > 1 ? "divide" : "shape";
+        Component told = Component.translatable(LANG + next, pieces());
+        view.node("pin").ifPresent(node -> node.setTooltip(told));
+        view.node("hand").ifPresent(node -> node.setTooltip(told));
+        if (view.isFocused() && !told.getString().equals(hint)) {
+            hint = told.getString();
+            view.showCaption(told, CAPTION_SECONDS);
         }
     }
 }

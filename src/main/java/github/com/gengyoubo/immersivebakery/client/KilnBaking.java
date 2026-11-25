@@ -1,7 +1,6 @@
 package github.com.gengyoubo.immersivebakery.client;
 
 import com.mojang.blaze3d.vertex.PoseStack;
-import com.mojang.blaze3d.vertex.VertexConsumer;
 import com.mojang.math.Axis;
 import com.renyigesai.bakeries.block.stone_kiln.StoneKilnBlockEntity;
 import com.renyigesai.bakeries.recipe.StoneKilnRecipe;
@@ -9,7 +8,6 @@ import java.util.stream.Stream;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.LightTexture;
 import net.minecraft.client.renderer.MultiBufferSource;
-import net.minecraft.client.renderer.Sheets;
 import net.minecraft.util.Mth;
 import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.ItemDisplayContext;
@@ -18,7 +16,6 @@ import net.minecraft.world.item.crafting.Recipe;
 import net.minecraft.world.item.crafting.RecipeType;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.state.properties.BlockStateProperties;
-import net.minecraftforge.client.model.pipeline.VertexConsumerWrapper;
 
 /** What bakes in the kiln turns into what it will be, little by little. */
 public final class KilnBaking {
@@ -35,7 +32,7 @@ public final class KilnBaking {
         if (result.isEmpty()) {
             return;
         }
-        MultiBufferSource faded = type -> new Faded(buffers.getBuffer(Sheets.translucentCullBlockSheet()), baked);
+        MultiBufferSource faded = Faded.of(buffers, baked);
         var minecraft = Minecraft.getInstance();
         float size = 0.5F + kiln.getSize();
         pose.pushPose();
@@ -53,21 +50,6 @@ public final class KilnBaking {
             minecraft.getItemRenderer().renderStatic(result, ItemDisplayContext.FIXED, LightTexture.FULL_BRIGHT, overlay, pose, faded, level, 0);
         }
         pose.popPose();
-    }
-
-    /** Draws whatever comes through it see-through. Items and blocks share the block atlas. */
-    private static final class Faded extends VertexConsumerWrapper {
-        private final float alpha;
-
-        private Faded(VertexConsumer drawn, float alpha) {
-            super(drawn);
-            this.alpha = alpha;
-        }
-
-        @Override
-        public VertexConsumer color(int red, int green, int blue, int opacity) {
-            return super.color(red, green, blue, Math.round(opacity * alpha));
-        }
     }
 
     /** How far all sides of it are baked together, 0 to 1. */
