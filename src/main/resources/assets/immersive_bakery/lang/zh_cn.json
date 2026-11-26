@@ -92,5 +92,10 @@
   "immersive_bakery.cake_part.cocoa_cream": "可可奶油",
   "immersive_bakery.cake_part.cheese_cream": "奶酪奶油",
   "immersive_bakery.cake_part.meat_floss": "肉松",
-  "immersive_bakery.cake_part.filling_suffix": "馅"
+  "immersive_bakery.cake_part.filling_suffix": "馅",
+  "immersive_bakery.custom_cake.base": "放入蛋糕胚",
+  "immersive_bakery.custom_cake.filling": "放入内馅",
+  "immersive_bakery.custom_cake.cream": "放入奶油层",
+  "immersive_bakery.custom_cake.topping": "蛋糕已完成，可继续添加装饰",
+  "immersive_bakery.custom_cake.complete": "蛋糕已完成"
 }

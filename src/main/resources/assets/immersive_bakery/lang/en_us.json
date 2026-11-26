@@ -92,5 +92,10 @@
   "immersive_bakery.cake_part.cocoa_cream": "Cocoa Cream ",
   "immersive_bakery.cake_part.cheese_cream": "Cheese Cream ",
   "immersive_bakery.cake_part.meat_floss": "Meat Floss ",
-  "immersive_bakery.cake_part.filling_suffix": " Filling "
+  "immersive_bakery.cake_part.filling_suffix": " Filling ",
+  "immersive_bakery.custom_cake.base": "Add a cake base",
+  "immersive_bakery.custom_cake.filling": "Add a filling",
+  "immersive_bakery.custom_cake.cream": "Add a cream layer",
+  "immersive_bakery.custom_cake.topping": "Cake complete; add a topping if desired",
+  "immersive_bakery.custom_cake.complete": "Cake complete"
 }

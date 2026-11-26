@@ -15,6 +15,7 @@ import org.spongepowered.asm.mixin.Mixin;
 @Mixin(CustomCakeBlock.class)
 abstract class CustomCakeBlockMixin extends HorizontalDirectionalBlock {
     protected CustomCakeBlockMixin(BlockBehaviour.Properties properties) { super(properties); }
+    // Preserve the cake's ingredients when picking the block: https://github.com/Renyigesai/bakery/issues/22
     @Override public ItemStack getCloneItemStack(BlockGetter level, BlockPos pos, BlockState state) {
         ItemStack stack = new ItemStack(BakeriesItems.CUSTOM_CAKE.get());
         if (level.getBlockEntity(pos) instanceof CustomCakeBlockEntity cake) CustomCakeItem.setCustomCakeNBT(cake, stack);

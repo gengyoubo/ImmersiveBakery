@@ -20,7 +20,7 @@ final class CakeLogic implements StationLogic {
         if (!CakeStation.ADD.equals(action) || !player.mayBuild() || !player.level().mayInteract(player, station.pos())) return;
         ItemStack carried = player.inventoryMenu.getCarried();
         var part = CakePartMeasurer.isIngredient(carried).orElse(null);
-        if (part == null) return;
+        if (part == null || !part.getType().equals(CakeStation.nextPart(station.level().getBlockEntity(station.pos())))) return;
         CustomCakeBlockEntity cake;
         if (station.blockState().is(BakeriesBlocks.SILICONE_PAPER.get())) {
             if (!CakePartMeasurer.CAKE_BASE.equals(part.getType())) return;
