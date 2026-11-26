@@ -4,6 +4,7 @@ import github.com.gengyoubo.immersivebakery.api.player.PlayerImmersionNetwork;
 import github.com.gengyoubo.immersivebakery.basket.BreadBasketStation;
 import github.com.gengyoubo.immersivebakery.blender.BlenderStation;
 import github.com.gengyoubo.immersivebakery.box.CakeBoxStation;
+import github.com.gengyoubo.immersivebakery.cake.CakeStation;
 import github.com.gengyoubo.immersivebakery.bread.BreadStation;
 import github.com.gengyoubo.immersivebakery.cup.CupStation;
 import github.com.gengyoubo.immersivebakery.dough.DoughStation;
@@ -36,6 +37,7 @@ public final class ImmersiveBakery {
         CupStation.register();
         BreadStation.register();
         CakeBoxStation.register();
+        CakeStation.register();
         BreadBasketStation.register();
         CupboardStation.register();
         FlourSieve.register();

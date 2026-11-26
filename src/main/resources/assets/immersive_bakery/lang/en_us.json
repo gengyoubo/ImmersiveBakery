@@ -79,5 +79,18 @@
   "immersive_bakery.placed_items.hint": "Scroll to turn · Shift+scroll to tilt · Ctrl+scroll to resize",
   "immersive_bakery.drawers.pull": "Click a drawer to pull it out or push it in",
   "immersive_bakery.drawers.full": "No room left in the drawer",
-  "immersive_bakery.drawers.pull_or_board": "Click a drawer to pull it out or push it in · W: board"
+  "immersive_bakery.drawers.pull_or_board": "Click a drawer to pull it out or push it in · W: board",
+  "immersive_bakery.custom_cake.hint": "Place a cake base, filling, cream or topping on the cake",
+  "immersive_bakery.cake_part.cake_base": "Cake",
+  "immersive_bakery.cake_part.red_velvet_cake_base": "Red Velvet Cake",
+  "immersive_bakery.cake_part.matcha_cake": "Matcha Cake",
+  "immersive_bakery.cake_part.basque_cake": "Basque Cheesecake",
+  "immersive_bakery.cake_part.blaze_cake": "Blaze Cake",
+  "immersive_bakery.cake_part.mashed_taro": "Taro",
+  "immersive_bakery.cake_part.bearnaise": "Egg Yolk Sauce",
+  "immersive_bakery.cake_part.cream": "Cream ",
+  "immersive_bakery.cake_part.cocoa_cream": "Cocoa Cream ",
+  "immersive_bakery.cake_part.cheese_cream": "Cheese Cream ",
+  "immersive_bakery.cake_part.meat_floss": "Meat Floss ",
+  "immersive_bakery.cake_part.filling_suffix": " Filling "
 }

@@ -79,5 +79,18 @@
   "immersive_bakery.placed_items.hint": "滚轮旋转 · Shift+滚轮倾斜 · Ctrl+滚轮缩放",
   "immersive_bakery.drawers.pull": "点击抽屉拉开或推回",
   "immersive_bakery.drawers.full": "抽屉里放不下了",
-  "immersive_bakery.drawers.pull_or_board": "点击抽屉拉开或推回 · W 看案板"
+  "immersive_bakery.drawers.pull_or_board": "点击抽屉拉开或推回 · W 看案板",
+  "immersive_bakery.custom_cake.hint": "将蛋糕胚、内馅、奶油层或装饰放到蛋糕上",
+  "immersive_bakery.cake_part.cake_base": "蛋糕",
+  "immersive_bakery.cake_part.red_velvet_cake_base": "红丝绒蛋糕",
+  "immersive_bakery.cake_part.matcha_cake": "抹茶蛋糕",
+  "immersive_bakery.cake_part.basque_cake": "巴斯克芝士蛋糕",
+  "immersive_bakery.cake_part.blaze_cake": "烈焰蛋糕",
+  "immersive_bakery.cake_part.mashed_taro": "芋泥",
+  "immersive_bakery.cake_part.bearnaise": "蛋黄酱",
+  "immersive_bakery.cake_part.cream": "奶油",
+  "immersive_bakery.cake_part.cocoa_cream": "可可奶油",
+  "immersive_bakery.cake_part.cheese_cream": "奶酪奶油",
+  "immersive_bakery.cake_part.meat_floss": "肉松",
+  "immersive_bakery.cake_part.filling_suffix": "馅"
 }

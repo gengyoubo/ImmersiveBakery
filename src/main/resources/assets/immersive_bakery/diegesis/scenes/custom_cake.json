@@ -1,0 +1,8 @@
+{
+  "camera": {"position": [8, 25, -23], "target": [8, 3, 8], "fov": 38},
+  "work_plane": 6,
+  "idle_visible": true,
+  "interface": {"inventory_panel": false},
+  "inventory_drawer": {"side": "bottom", "style": "minimal", "always_open": true, "compact": true, "background": "#00000000", "slot_color": "#8C1E140C", "carry_size": 5},
+  "nodes": [{"id": "cake", "pos": [8, 0, 8], "collider": {"from": [-7, 0, -7], "to": [7, 8, 7]}, "takes_items": true}]
+}
